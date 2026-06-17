@@ -168,7 +168,7 @@ async function fetchMyBookings() {
 
   try {
     // Flask ya tiene preparado recibir el ?username=
-    const response = await fetch(`http://127.0.0.1:5000/api/bookings?username=${username}`);
+    const response = await fetch(`https://tp-ing-software-2-spicy-tech.vercel.app/api/bookings?username=${username}`);
     const result = await response.json();
     if (result.success) {
       MY_RESERVAS = result.data.map(r => ({
@@ -198,7 +198,7 @@ async function preloadQRs() {
   for (const r of confirmed) {
     if (!QR_CACHE[r.id]) {
       try {
-        const res = await fetch(`http://127.0.0.1:5000/api/bookings/${r.id}/qr-datauri`);
+        const res = await fetch(`https://tp-ing-software-2-spicy-tech.vercel.app/api/bookings/${r.id}/qr-datauri`);
         const data = await res.json();
         if (data.success) {
           QR_CACHE[r.id] = data.data.qr_data_uri;
@@ -273,7 +273,7 @@ function renderList(){
             <div class="qr-desc">Mostrá este código QR en recepción al llegar al edificio. No necesitás imprimirlo — podés mostrarlo desde tu celular.</div>
             <div class="qr-actions">
               <button class="btn-qr-sm btn-qr-primary" onclick="downloadQR('${r.id}', '${r.spaceName}')">⬇️ Descargar pase</button>
-              <a href="http://127.0.0.1:5000/api/bookings/${r.id}/qr" target="_blank" class="btn-qr-sm btn-qr-ghost" style="text-decoration:none;display:inline-flex;align-items:center;">🔍 Ver en grande</a>
+              <a href="https://tp-ing-software-2-spicy-tech.vercel.app/api/bookings/${r.id}/qr" target="_blank" class="btn-qr-sm btn-qr-ghost" style="text-decoration:none;display:inline-flex;align-items:center;">🔍 Ver en grande</a>
             </div>
           </div>
           <div class="qr-wrap">
@@ -337,7 +337,7 @@ function closeModal() {
 async function confirmCancel() {
   if (!_pendingCancelId) return;
   try {
-    const response = await fetch(`http://127.0.0.1:5000/api/bookings/${_pendingCancelId}`, {
+    const response = await fetch(`https://tp-ing-software-2-spicy-tech.vercel.app/api/bookings/${_pendingCancelId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: 'cancelada' })
