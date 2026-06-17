@@ -179,7 +179,11 @@ async function fetchMyBookings() {
         status: r.status, // "pendiente", "confirmada", "cancelada"
         username: r.username,
         qrToken: r.qr_token || null
-      }));
+      })).sort((a, b) => {
+        // Ordenar de más nuevo a más viejo por ID (timestamp) o fecha
+        if (a.id && b.id) return Number(b.id) - Number(a.id);
+        return (b.date || '').localeCompare(a.date || '');
+      });
       renderPage();
       // Precargamos los QR para reservas confirmadas
       preloadQRs();

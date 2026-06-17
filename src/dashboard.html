@@ -247,6 +247,7 @@
     <ul class="sb-nav">
       <li><a href="home.html"><span class="sb-icon">🏠</span> Ver sitio público</a></li>
       <li><a href="spaces.html"><span class="sb-icon">🗂️</span> Ver espacios</a></li>
+      <li><a href="mis-reservas.html"><span class="sb-icon">📋</span> Ver mis reservas</a></li>
     </ul>
 
     <div class="sb-footer">
@@ -574,7 +575,11 @@ async function fetchBookingsAPI() {
         date: r.booking_date,
         time: r.booking_time,
         status: r.status || 'pendiente'
-      }));
+      })).sort((a, b) => {
+        // Ordenar de más nuevo a más viejo por ID (timestamp) o fecha
+        if (a.id && b.id) return Number(b.id) - Number(a.id);
+        return (b.date || '').localeCompare(a.date || '');
+      });
 
       renderRes(reservasFront); // Dibujamos la tabla de reservas
       renderOv();                // Dibujamos la tabla de últimas reservas en overview
