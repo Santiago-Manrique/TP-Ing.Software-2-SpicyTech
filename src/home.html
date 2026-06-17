@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpicyTech · Coworking Space</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:        #C0392B;
+      --red-deep:   #96281B;
+      --red-soft:   #E8604C;
+      --red-muted:  #D4614F;
+      --cream:      #FAF6F0;
+      --cream-dark: #F0E8DC;
+      --cream-mid:  #E8DDD0;
+      --sand:       #C9B99A;
+      --brown:      #7A5C44;
+      --dark:       #1C1209;
+      --txt:        #2C1A10;
+      --txt2:       #7A5C44;
+      --txt3:       #A08870;
+      --white:      #FFFFFF;
+      --r:          16px;
+      --rm:         10px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--txt);
+      font-family: 'Outfit', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--cream-dark); }
+    ::-webkit-scrollbar-thumb { background: var(--red-muted); border-radius: 3px; }
+
+    /* ─── NAVBAR ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 0 5%;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(250,246,240,0.95);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 var(--cream-mid);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .nav-logo-mark {
+      width: 38px; height: 38px;
+      background: var(--red);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .nav-logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--dark);
+    }
+    .nav-logo-sub {
+      font-size: 10px;
+      color: var(--txt3);
+      margin-top: 1px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--txt2);
+      text-decoration: none;
+      transition: color 0.2s;
+      letter-spacing: 0.02em;
+    }
+    .nav-links a:hover { color: var(--red); }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-ghost {
+      padding: 9px 20px;
+      border: 1.5px solid var(--cream-mid);
+      border-radius: var(--rm);
+      background: transparent;
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--txt);
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+      display: inline-flex; align-items: center;
+    }
+    .btn-ghost:hover { border-color: var(--red); color: var(--red); }
+
+    .btn-primary {
+      padding: 9px 22px;
+      background: var(--red);
+      border: none;
+      border-radius: var(--rm);
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex; align-items: center;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn-primary:hover { background: var(--red-deep); transform: translateY(-1px); }
+    .btn-primary:active { transform: scale(0.98); }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg-shape {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero-bg-shape::before {
+      content: '';
+      position: absolute;
+      top: -120px; right: -100px;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(192,57,43,0.08) 0%, transparent 70%);
+    }
+    .hero-bg-shape::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; left: 10%;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,185,154,0.25) 0%, transparent 70%);
+    }
+
+    /* Grain texture overlay */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero-left {
+      padding: 140px 6% 80px 7%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.2s;
+    }
+    .eyebrow-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--red);
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(48px, 6vw, 80px);
+      font-weight: 900;
+      line-height: 1.0;
+      color: var(--dark);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.35s;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--red);
+    }
+    .hero-title .underline-word {
+      position: relative;
+      display: inline-block;
+    }
+    .hero-title .underline-word::after {
+      content: '';
+      position: absolute;
+      bottom: 2px; left: 0; right: 0;
+      height: 4px;
+      background: var(--red-soft);
+      border-radius: 2px;
+      opacity: 0.4;
+    }
+
+    .hero-desc {
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--txt2);
+      max-width: 440px;
+      margin-bottom: 44px;
+      font-weight: 300;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.5s;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.65s;
+    }
+    .btn-hero {
+      padding: 15px 36px;
+      background: var(--red);
+      border: none;
+      border-radius: var(--r);
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 8px 24px rgba(192,57,43,0.3);
+    }
+    .btn-hero:hover {
+      background: var(--red-deep);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(192,57,43,0.4);
+    }
+    .btn-hero-outline {
+      padding: 15px 28px;
+      background: transparent;
+      border: 1.5px solid var(--cream-mid);
+      border-radius: var(--r);
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--txt);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-hero-outline:hover { border-color: var(--red); color: var(--red); }
+
+    .hero-stats {
+      display: flex;
+      gap: 0;
+      margin-top: 52px;
+      padding-top: 36px;
+      border-top: 1px solid var(--cream-mid);
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.8s;
+      justify-content: flex-start;
+    }
+    .stat-item {
+      flex: 1;
+      text-align: center;
+      padding: 0 12px;
+      border-right: 1px solid var(--cream-mid);
+    }
+    .stat-item:first-child { padding-left: 0; }
+    .stat-item:last-child  { border-right: none; }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 4vw, 48px);
+      font-weight: 900;
+      color: var(--dark);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 13px;
+      color: var(--txt3);
+      margin-top: 6px;
+      font-weight: 400;
+    }
+
+    /* ─── HERO RIGHT ─── */
+    .hero-right {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 5% 60px 4%;
+      opacity: 0;
+      animation: fadeLeft 0.8s ease forwards 0.4s;
+    }
+
+    .hero-visual {
+      width: 100%;
+      max-width: 520px;
+      position: relative;
+    }
+
+    .hero-card-main {
+      background: var(--white);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(44,26,16,0.15);
+      position: relative;
+    }
+
+    .hero-card-img {
+      width: 100%;
+      height: 280px;
+      background: linear-gradient(135deg, #C0392B 0%, #E8604C 40%, #D4614F 70%, #96281B 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-card-img::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .space-illustration {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding: 24px;
+      width: 100%;
+    }
+    .space-desk {
+      background: rgba(255,255,255,0.15);
+      border-radius: 10px;
+      height: 70px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      font-size: 22px;
+      color: rgba(255,255,255,0.9);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: transform 0.3s;
+    }
+    .space-desk:hover { transform: scale(1.05); }
+    .space-desk span {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      opacity: 0.8;
+    }
+
+    .hero-card-body {
+      padding: 24px;
+    }
+    .availability-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .availability-title {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--dark);
+    }
+    .avail-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: #FEE9E7;
+      color: var(--red);
+    }
+
+    .time-slots {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .slot {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .slot.free { background: #FEF9F5; border: 1px solid var(--cream-mid); color: var(--txt2); }
+    .slot.free:hover { border-color: var(--red); color: var(--red); }
+    .slot.taken { background: var(--cream-dark); color: var(--txt3); pointer-events: none; text-decoration: line-through; }
+    .slot.selected { background: var(--red); color: white; border: 1px solid var(--red); }
+
+    /* Floating cards */
+    .float-card {
+      position: absolute;
+      background: var(--white);
+      border-radius: var(--r);
+      box-shadow: 0 12px 40px rgba(44,26,16,0.14);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .float-card-1 {
+      bottom: -16px;
+      left: -20px;
+      animation: float1 4s ease-in-out infinite;
+      z-index: 10;
+    }
+    .float-card-2 {
+      top: -18px;
+      right: -20px;
+      animation: float2 5s ease-in-out infinite;
+      z-index: 10;
+    }
+    .float-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .float-text-label { font-size: 11px; color: var(--txt3); }
+    .float-text-val { font-size: 14px; font-weight: 600; color: var(--dark); }
+
+    @keyframes float1 {
+      0%,100% { transform: translateY(0px) rotate(-1deg); }
+      50% { transform: translateY(-10px) rotate(1deg); }
+    }
+    @keyframes float2 {
+      0%,100% { transform: translateY(0px) rotate(1deg); }
+      50% { transform: translateY(-14px) rotate(-1deg); }
+    }
+
+    /* ─── SECTION SHARED ─── */
+    section { position: relative; }
+    .section-inner { max-width: 1200px; margin: 0 auto; padding: 100px 5%; }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-label::before {
+      content: '';
+      display: inline-block;
+      width: 24px; height: 2px;
+      background: var(--red);
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 800;
+      color: var(--dark);
+      line-height: 1.15;
+      margin-bottom: 18px;
+    }
+    .section-title em { font-style: italic; color: var(--red-muted); }
+
+    .section-desc {
+      font-size: 16px;
+      color: var(--txt2);
+      line-height: 1.7;
+      max-width: 520px;
+      font-weight: 300;
+    }
+
+    /* ─── FEATURES ─── */
+    .features-section {
+      background: var(--dark);
+      color: var(--white);
+    }
+    .features-section .section-title { color: var(--cream); }
+    .features-section .section-desc { color: var(--sand); }
+    .features-section .section-label { color: var(--red-soft); }
+    .features-section .section-label::before { background: var(--red-soft); }
+
+    .features-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 64px;
+      gap: 40px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .feature-card {
+      background: #241508;
+      padding: 40px 32px;
+      transition: background 0.2s;
+      position: relative;
+    }
+    .feature-card:hover { background: #2e1b0a; }
+    .feature-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 32px; right: 32px;
+      height: 1px;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .feature-icon {
+      width: 48px; height: 48px;
+      background: rgba(192,57,43,0.15);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(192,57,43,0.2);
+    }
+    .feature-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 10px;
+    }
+    .feature-desc {
+      font-size: 14px;
+      color: var(--sand);
+      line-height: 1.65;
+      font-weight: 300;
+    }
+
+    /* ─── ESPACIOS ─── */
+    .spaces-section {
+      background: var(--cream);
+    }
+    .spaces-layout {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 80px;
+      align-items: start;
+    }
+    .spaces-sticky { position: sticky; top: 100px; }
+
+    .spaces-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .space-card {
+      background: var(--white);
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--cream-mid);
+      transition: transform 0.25s, box-shadow 0.25s;
+      cursor: pointer;
+    }
+    .space-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 48px rgba(44,26,16,0.12);
+    }
+    .space-card.featured {
+      grid-column: 1 / -1;
+    }
+
+    .space-card-img {
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .space-card.featured .space-card-img { height: 200px; }
+
+    .space-card-body { padding: 20px; }
+    .space-card-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 6px;
+    }
+    .space-card-desc {
+      font-size: 13px;
+      color: var(--txt2);
+      line-height: 1.6;
+      margin-bottom: 14px;
+      font-weight: 300;
+    }
+    .space-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .space-price {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--red);
+    }
+    .space-badge {
+      font-size: 11px;
+      padding: 3px 9px;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+    .badge-avail { background: #FEE9E7; color: var(--red); }
+    .badge-full  { background: var(--cream-dark); color: var(--txt3); }
+
+    /* ─── PRECIOS ─── */
+    .pricing-section {
+      background: var(--cream-dark);
+    }
+    .pricing-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+    .pricing-header .section-label { justify-content: center; }
+    .pricing-header .section-desc { margin: 0 auto; text-align: center; }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .price-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 36px 28px;
+      border: 1.5px solid var(--cream-mid);
+      transition: transform 0.25s, box-shadow 0.25s;
+      position: relative;
+    }
+    .price-card:hover { transform: translateY(-4px); }
+    .price-card.popular {
+      background: var(--red);
+      border-color: var(--red);
+      color: #fff;
+      transform: scale(1.04);
+    }
+    .price-card.popular:hover { transform: scale(1.04) translateY(-4px); }
+
+    .popular-tag {
+      position: absolute;
+      top: -12px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--dark);
+      color: var(--cream);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 14px;
+      border-radius: 20px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .plan-name {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .plan-name.pop { color: rgba(255,255,255,0.8); }
+    .plan-name.reg { color: var(--txt3); }
+
+    .plan-price {
+      font-family: 'Playfair Display', serif;
+      font-size: 48px;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .plan-price.pop { color: #fff; }
+    .plan-price.reg { color: var(--dark); }
+
+    .plan-period {
+      font-size: 13px;
+      font-weight: 300;
+      margin-bottom: 28px;
+    }
+    .plan-period.pop { color: rgba(255,255,255,0.7); }
+    .plan-period.reg { color: var(--txt3); }
+
+    .plan-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+    .plan-features li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13.5px;
+      font-weight: 400;
+    }
+    .plan-features li.pop { color: rgba(255,255,255,0.9); }
+    .plan-features li.reg { color: var(--txt2); }
+    .check-icon { color: var(--red); font-size: 14px; flex-shrink: 0; }
+    .check-icon.pop { color: rgba(255,255,255,0.9); }
+
+    .btn-plan {
+      width: 100%;
+      padding: 13px;
+      border-radius: var(--rm);
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+    }
+    .btn-plan.pop {
+      background: var(--dark);
+      color: var(--cream);
+      border: none;
+    }
+    .btn-plan.pop:hover { background: #2e1b0a; }
+    .btn-plan.reg {
+      background: transparent;
+      color: var(--red);
+      border: 1.5px solid var(--cream-mid);
+    }
+    .btn-plan.reg:hover { border-color: var(--red); background: #FEF9F5; }
+
+    /* ─── CONTACTO / FOOTER ─── */
+    .contact-section {
+      background: var(--dark);
+      color: var(--cream);
+    }
+
+    .contact-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .contact-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 4vw, 56px);
+      font-weight: 900;
+      line-height: 1.1;
+      color: var(--cream);
+      margin-bottom: 20px;
+    }
+    .contact-title em { font-style: italic; color: var(--red-soft); }
+    .contact-desc { font-size: 15px; color: var(--sand); line-height: 1.7; margin-bottom: 36px; font-weight: 300; }
+
+    .contact-info-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .contact-icon {
+      width: 40px; height: 40px;
+      background: rgba(192,57,43,0.15);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      border: 1px solid rgba(192,57,43,0.2);
+      flex-shrink: 0;
+    }
+    .contact-info-label { font-size: 11px; color: var(--sand); margin-bottom: 2px; font-weight: 400; letter-spacing: 0.05em; }
+    .contact-info-val { font-size: 14px; color: var(--cream); font-weight: 500; }
+
+    .contact-form-card {
+      background: #241508;
+      border-radius: 24px;
+      padding: 40px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .form-title-small {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 24px;
+    }
+
+    .form-field { margin-bottom: 16px; }
+    .form-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--sand);
+      margin-bottom: 7px;
+    }
+    .form-input, .form-textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--rm);
+      padding: 11px 14px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      color: var(--cream);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-input::placeholder, .form-textarea::placeholder { color: rgba(255,255,255,0.25); }
+    .form-input:focus, .form-textarea:focus { border-color: var(--red-soft); }
+    .form-textarea { height: 100px; resize: vertical; }
+
+    .btn-send {
+      width: 100%;
+      padding: 14px;
+      background: var(--red);
+      border: none;
+      border-radius: var(--rm);
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      margin-top: 4px;
+      transition: background 0.2s;
+    }
+    .btn-send:hover { background: var(--red-deep); }
+
+    /* ─── FOOTER BAR ─── */
+    .footer-bar {
+      background: #140D04;
+      padding: 24px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-bar-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--cream);
+      opacity: 0.7;
+    }
+    .footer-bar-copy {
+      font-size: 12px;
+      color: var(--sand);
+      opacity: 0.6;
+    }
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+    .footer-links a {
+      font-size: 12px;
+      color: var(--sand);
+      text-decoration: none;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+    .footer-links a:hover { opacity: 1; }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeLeft {
+      from { opacity: 0; transform: translateX(40px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── MOBILE ─── */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-left { padding: 120px 6% 40px; }
+      .hero-right { padding: 20px 6% 80px; }
+      .hero-visual { max-width: 100%; }
+      .float-card-1, .float-card-2 { display: none; }
+      .features-grid { grid-template-columns: 1fr; }
+      .features-header { flex-direction: column; align-items: flex-start; }
+      .spaces-layout { grid-template-columns: 1fr; gap: 40px; }
+      .spaces-sticky { position: relative; top: auto; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .price-card.popular { transform: none; }
+      .contact-layout { grid-template-columns: 1fr; gap: 48px; }
+      nav .nav-links { display: none; }
+    }
+    @media (max-width: 600px) {
+      .spaces-grid { grid-template-columns: 1fr; }
+      .space-card.featured { grid-column: auto; }
+      .hero-stats { gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ NAVBAR ══ -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-mark">🌶️</div>
+    <div>
+      <div class="nav-logo-text">SpicyTech</div>
+      <div class="nav-logo-sub">Coworking Space</div>
+    </div>
+  </a>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#features">Servicios</a></li>
+    <li><a href="spaces.html">Espacios</a></li>
+    <li><a href="#pricing">Precios</a></li>
+    <li><a href="#contact">Contacto</a></li>
+    <li id="nav-admin" style="display:none;"><a href="dashboard.html" style="color:var(--red);font-weight:600;">⚙️ Admin</a></li>
+  </ul>
+  <div class="nav-actions" id="nav-actions">
+    <a href="login.html" class="btn-ghost" id="nav-btn-login">Iniciar sesión</a>
+    <a href="login.html#signup" class="btn-primary" id="nav-btn-register">Registrarse →</a>
+  </div>
+</nav>
+
+
+<!-- ══ HERO ══ -->
+<section class="hero" id="home">
+  <div class="hero-bg-shape"></div>
+
+  <div class="hero-left">
+    <div class="hero-eyebrow">
+      <span class="eyebrow-dot"></span>
+      Coworking en el corazón de la ciudad
+    </div>
+    <h1 class="hero-title">
+      Tu próximo<br>
+      <em>gran proyecto</em><br>
+      empieza <span class="underline-word">aquí</span>
+    </h1>
+    <p class="hero-desc">
+      Espacios modernos, comunidad vibrante y todo lo que necesitás para trabajar, crear y crecer. Sin ataduras, sin excusas.
+    </p>
+    <div class="hero-cta-group">
+      <a href="login.html#signup" class="btn-hero" id="hero-cta-btn">
+        Reservá tu lugar
+        <span>→</span>
+      </a>
+      <a href="spaces.html" class="btn-hero-outline">
+        Ver espacios
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">120+</div>
+        <div class="stat-label">Coworkers activos</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Tipos de espacios</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">98%</div>
+        <div class="stat-label">Satisfacción</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-visual">
+      <!-- Floating badge top right -->
+      <div class="float-card float-card-2">
+        <div class="float-icon" style="background:#FEE9E7;">☕</div>
+        <div>
+          <div class="float-text-label">Cafetería incluida</div>
+          <div class="float-text-val">Ilimitada</div>
+        </div>
+      </div>
+
+      <div class="hero-card-main">
+        <div class="hero-card-img">
+          <div class="space-illustration">
+            <div class="space-desk">🖥️<span>Desk</span></div>
+            <div class="space-desk">🏢<span>Sala</span></div>
+            <div class="space-desk">🔒<span>Privada</span></div>
+            <div class="space-desk">📡<span>WiFi</span></div>
+            <div class="space-desk">🎧<span>Foco</span></div>
+            <div class="space-desk">🤝<span>Equipo</span></div>
+          </div>
+        </div>
+        <div class="hero-card-body">
+          <div class="availability-row">
+            <span class="availability-title">Disponibilidad de hoy</span>
+            <span class="avail-badge">8 lugares libres</span>
+          </div>
+          <div class="time-slots">
+            <div class="slot taken">08:00</div>
+            <div class="slot taken">09:00</div>
+            <div class="slot selected">10:00</div>
+            <div class="slot free">11:00</div>
+            <div class="slot free">14:00</div>
+            <div class="slot free">15:00</div>
+            <div class="slot free">16:00</div>
+            <div class="slot taken">18:00</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Floating badge bottom left -->
+      <div class="float-card float-card-1">
+        <div class="float-icon" style="background:#FEE9E7; font-size:16px;">📶</div>
+        <div>
+          <div class="float-text-label">Velocidad WiFi</div>
+          <div class="float-text-val">500 Mbps</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ FEATURES ══ -->
+<section class="features-section" id="features">
+  <div class="section-inner">
+    <div class="features-header reveal">
+      <div>
+        <div class="section-label">Servicios incluidos</div>
+        <h2 class="section-title">Todo lo que<br>necesitás, <em>incluido</em></h2>
+      </div>
+      <p class="section-desc" style="max-width:320px;">Sin sorpresas. Un solo precio que cubre todo lo que un profesional moderno necesita.</p>
+    </div>
+    <div class="features-grid reveal">
+      <div class="feature-card">
+        <div class="feature-icon">📡</div>
+        <div class="feature-name">WiFi de alta velocidad</div>
+        <div class="feature-desc">Fibra óptica simétrica de 500 Mbps dedicada. Conectividad de respaldo automática.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">❄️</div>
+        <div class="feature-name">Ambiente climatizado</div>
+        <div class="feature-desc">Temperatura ideal todo el año. Sistema de climatización zonal por área de trabajo.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">😊</div>
+        <div class="feature-name">Recepción personalizada</div>
+        <div class="feature-desc">Equipo de recepción disponible para gestionar visitas, paquetes y consultas.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">☕</div>
+        <div class="feature-name">Cafetería ilimitada</div>
+        <div class="feature-desc">Café, té, snacks saludables y bebidas disponibles sin costo adicional.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <div class="feature-name">Lockers privados</div>
+        <div class="feature-desc">Guardado seguro de pertenencias con lockers asignados y acceso con código.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💺</div>
+        <div class="feature-name">Mobiliario ergonómico</div>
+        <div class="feature-desc">Sillas, escritorios y monitores de grado profesional para cuidar tu postura.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ ESPACIOS ══ -->
+<section class="spaces-section" id="spaces">
+  <div class="section-inner">
+    <div class="spaces-layout">
+      <div class="spaces-sticky reveal">
+        <div class="section-label">Nuestros espacios</div>
+        <h2 class="section-title">Elegí el espacio <em>ideal</em> para vos</h2>
+        <p class="section-desc">Desde escritorios compartidos hasta oficinas privadas. Flexibilidad total según tus necesidades.</p>
+        <br><br>
+        <a href="login.html#signup" class="btn-hero" id="hero-cta-btn2" style="display:inline-flex;">Reservar ahora →</a>
+      </div>
+
+      <div class="spaces-grid reveal">
+        <div class="space-card featured">
+          <div class="space-card-img" style="background: linear-gradient(135deg, #FAE8E5 0%, #F5C8C3 100%);">
+            🏢
+          </div>
+          <div class="space-card-body">
+            <div class="space-card-name">Sala de Reuniones</div>
+            <div class="space-card-desc">Sala equipada para hasta 8 personas con proyector, pizarra y videoconferencia integrada. Ideal para presentaciones y reuniones de equipo.</div>
+            <div class="space-card-footer">
+              <span class="space-price">Desde $800/hora</span>
+              <span class="space-badge badge-avail">✓ Disponible</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-card">
+          <div class="space-card-img" style="background: linear-gradient(135deg, #F5EBE0 0%, #EDD9C7 100%);">
+            🪑
+          </div>
+          <div class="space-card-body">
+            <div class="space-card-name">Espacio Compartido</div>
+            <div class="space-card-desc">Escritorios en ambiente abierto. Comunidad, networking y energía colectiva.</div>
+            <div class="space-card-footer">
+              <span class="space-price">Desde $300/día</span>
+              <span class="space-badge badge-avail">✓ Disponible</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-card">
+          <div class="space-card-img" style="background: linear-gradient(135deg, #FAE8E5 0%, #EFC5BF 100%);">
+            🔐
+          </div>
+          <div class="space-card-body">
+            <div class="space-card-name">Oficina Privada</div>
+            <div class="space-card-desc">Espacio exclusivo para tu empresa. Totalmente cerrado y personalizable.</div>
+            <div class="space-card-footer">
+              <span class="space-price">Desde $5.500/mes</span>
+              <span class="space-badge badge-avail">✓ Disponible</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-card" style="grid-column: 1 / -1;">
+          <div class="space-card-img" style="background: linear-gradient(135deg, #EDE0D4 0%, #D6C4AE 100%); height:120px;">
+            📚
+          </div>
+          <div class="space-card-body">
+            <div class="space-card-name">Sala de Capacitación</div>
+            <div class="space-card-desc">Aula completa para workshops, trainings y eventos. Capacidad para 20 personas con todo el equipamiento audiovisual necesario.</div>
+            <div class="space-card-footer">
+              <span class="space-price">Desde $1.200/hora</span>
+              <span class="space-badge badge-full">Reservar</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ PRICING ══ -->
+<section class="pricing-section" id="pricing">
+  <div class="section-inner">
+    <div class="pricing-header reveal">
+      <div class="section-label">Planes y precios</div>
+      <h2 class="section-title">Elegí cómo <em>trabajar</em></h2>
+      <p class="section-desc">Sin contratos a largo plazo. Cambiá de plan cuando quieras.</p>
+    </div>
+
+    <div class="pricing-grid reveal">
+      <!-- Free -->
+      <div class="price-card">
+        <div class="plan-name reg">Visita de Día</div>
+        <div class="plan-price reg">$300</div>
+        <div class="plan-period reg">por día</div>
+        <ul class="plan-features">
+          <li class="reg"><span class="check-icon">✓</span> Escritorio compartido</li>
+          <li class="reg"><span class="check-icon">✓</span> WiFi de alta velocidad</li>
+          <li class="reg"><span class="check-icon">✓</span> Cafetería incluida</li>
+          <li class="reg"><span class="check-icon">✓</span> Locker por el día</li>
+          <li class="reg" style="opacity:0.4;"><span>✗</span> Sala de reuniones</li>
+          <li class="reg" style="opacity:0.4;"><span>✗</span> Dirección postal</li>
+        </ul>
+        <a href="login.html#signup" class="btn-plan reg">Empezar hoy</a>
+      </div>
+
+      <!-- Popular -->
+      <div class="price-card popular">
+        <div class="popular-tag">⭐ Más elegido</div>
+        <div class="plan-name pop">Mensual Pro</div>
+        <div class="plan-price pop">$4.800</div>
+        <div class="plan-period pop">por mes</div>
+        <ul class="plan-features">
+          <li class="pop"><span class="check-icon pop">✓</span> Acceso ilimitado</li>
+          <li class="pop"><span class="check-icon pop">✓</span> Escritorio dedicado</li>
+          <li class="pop"><span class="check-icon pop">✓</span> 8 hs sala de reuniones</li>
+          <li class="pop"><span class="check-icon pop">✓</span> Locker permanente</li>
+          <li class="pop"><span class="check-icon pop">✓</span> Dirección postal</li>
+          <li class="pop"><span class="check-icon pop">✓</span> Acceso 24/7</li>
+        </ul>
+        <a href="login.html#signup" class="btn-plan pop">Suscribirme</a>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="price-card">
+        <div class="plan-name reg">Empresa</div>
+        <div class="plan-price reg">$9.500</div>
+        <div class="plan-period reg">por mes</div>
+        <ul class="plan-features">
+          <li class="reg"><span class="check-icon">✓</span> Oficina privada</li>
+          <li class="reg"><span class="check-icon">✓</span> 5 puestos incluidos</li>
+          <li class="reg"><span class="check-icon">✓</span> Sala ilimitada</li>
+          <li class="reg"><span class="check-icon">✓</span> Recepción dedicada</li>
+          <li class="reg"><span class="check-icon">✓</span> Facturación empresarial</li>
+          <li class="reg"><span class="check-icon">✓</span> Soporte prioritario</li>
+        </ul>
+        <a href="#contact" class="btn-plan reg">Consultar →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ CONTACTO ══ -->
+<section class="contact-section" id="contact">
+  <div class="section-inner">
+    <div class="contact-layout">
+      <div class="reveal">
+        <div class="section-label" style="color:var(--red-soft);">
+          <span style="background:var(--red-soft);display:inline-block;width:24px;height:2px;"></span>
+          Contacto
+        </div>
+        <h2 class="contact-title">¿Listo para <em>empezar</em>?</h2>
+        <p class="contact-desc">Visitanos, escribinos o llamanos. Estamos para ayudarte a encontrar el espacio perfecto para tu proyecto.</p>
+
+        <div class="contact-info-item">
+          <div class="contact-icon">📍</div>
+          <div>
+            <div class="contact-info-label">Dirección</div>
+            <div class="contact-info-val">Av. Ejemplo 1234, Ciudad</div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon">📞</div>
+          <div>
+            <div class="contact-info-label">Teléfono</div>
+            <div class="contact-info-val">+54 11 1234-5678</div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon">✉️</div>
+          <div>
+            <div class="contact-info-label">Email</div>
+            <div class="contact-info-val">hola@spicytech.com</div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon">🕐</div>
+          <div>
+            <div class="contact-info-label">Horarios</div>
+            <div class="contact-info-val">Lun–Vie 8:00 – 22:00 · Sáb 9:00 – 18:00</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal">
+        <div class="contact-form-card">
+          <div class="form-title-small">Envianos un mensaje</div>
+          <div class="form-field">
+            <label class="form-label">Nombre</label>
+            <input class="form-input" type="text" placeholder="Tu nombre completo">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Email</label>
+            <input class="form-input" type="email" placeholder="tu@email.com">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Mensaje</label>
+            <textarea class="form-textarea" placeholder="¿En qué podemos ayudarte?"></textarea>
+          </div>
+          <button class="btn-send">Enviar mensaje →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER BAR ══ -->
+<div class="footer-bar">
+  <div class="footer-bar-logo">SpicyTech 🌶️</div>
+  <div class="footer-links">
+    <a href="#home">Inicio</a>
+    <a href="#features">Servicios</a>
+    <a href="#spaces">Espacios</a>
+    <a href="#pricing">Precios</a>
+  </div>
+  <div class="footer-bar-copy">© 2026 SpicyTech Coworking · Ingeniería de Software II · UCP</div>
+</div>
+
+
+<script>
+  // Navbar scroll effect
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Interactive time slots
+  document.querySelectorAll('.slot.free').forEach(slot => {
+    slot.addEventListener('click', () => {
+      document.querySelectorAll('.slot').forEach(s => {
+        if (s.classList.contains('selected')) {
+          s.classList.remove('selected');
+          s.classList.add('free');
+        }
+      });
+      slot.classList.remove('free');
+      slot.classList.add('selected');
+    });
+  });
+
+  // Contact form submit
+  document.querySelector('.btn-send').addEventListener('click', () => {
+    const btn = document.querySelector('.btn-send');
+    btn.textContent = '✓ Mensaje enviado';
+    btn.style.background = '#2C7A5C';
+    setTimeout(() => {
+      btn.textContent = 'Enviar mensaje →';
+      btn.style.background = '';
+    }, 3000);
+  });
+</script>
+<script>
+/* ── AUTH-AWARE NAVBAR ── */
+(function() {
+  const token = localStorage.getItem('nexo_token');
+  const raw   = localStorage.getItem('nexo_user');
+  let valid = false, role = null, username = null;
+
+  if (token && raw) {
+    try {
+      const parts = token.split('.');
+      if (parts.length === 3) {
+        const pad = s => s + '==='.slice((s.length + 3) % 4);
+        const payload = JSON.parse(decodeURIComponent(escape(atob(pad(parts[1])))));
+        valid = !payload.exp || payload.exp > Math.floor(Date.now() / 1000);
+      }
+      // Fallback
+      if (!valid) valid = true;
+      const user = JSON.parse(raw);
+      role = user.role;
+      username = user.username;
+    } catch(e) {}
+  }
+
+  if (valid && role) {
+    const actions = document.getElementById('nav-actions');
+    if (role === 'admin') {
+      actions.innerHTML = `
+        <span style="font-size:13px;color:var(--txt2);font-weight:500;">👤 ${username}</span>
+        <a href="dashboard.html" class="btn-primary" style="font-size:13px;">⚙️ Admin</a>
+        <button onclick="doLogout()" class="btn-ghost" style="cursor:pointer;">Cerrar sesión</button>
+      `;
+    } else {
+      actions.innerHTML = `
+        <span style="font-size:13px;color:var(--txt2);font-weight:500;">👤 ${username}</span>
+        <a href="mis-reservas.html" class="btn-ghost" style="font-size:13px;">Mis reservas</a>
+        <button onclick="doLogout()" class="btn-ghost" style="cursor:pointer;">Cerrar sesión</button>
+      `;
+    }
+
+    // CORREGIDO: si ya está logueado, el botón "Reservá tu lugar" va a spaces.html, no al signup
+    const ctaBtn  = document.getElementById('hero-cta-btn');
+    const ctaBtn2 = document.getElementById('hero-cta-btn2');
+    const ctaTarget = role === 'admin' ? 'dashboard.html' : 'spaces.html';
+    const ctaText   = role === 'admin' ? 'Ir al panel ⚙️' : 'Reservá tu lugar →';
+    if (ctaBtn)  { ctaBtn.href  = ctaTarget; ctaBtn.innerHTML  = ctaText; }
+    if (ctaBtn2) { ctaBtn2.href = ctaTarget; ctaBtn2.innerHTML = role === 'admin' ? 'Panel admin →' : 'Reservar ahora →'; }
+
+    // Mostrar acceso admin en nav-links si existe
+    const navAdmin = document.getElementById('nav-admin');
+    if (navAdmin && role === 'admin') navAdmin.style.display = '';
+
+    // Banner de bienvenida personalizado
+    window.addEventListener('DOMContentLoaded', () => {
+      const eyebrow = document.querySelector('.hero-eyebrow');
+      if (eyebrow) {
+        const roleLabel = role === 'admin' ? '⚙️ Administrador' : '🪑 Miembro';
+        eyebrow.innerHTML = `<span class="eyebrow-dot"></span>Bienvenido, <strong>${username}</strong> · ${roleLabel}`;
+      }
+      if (role === 'admin') {
+        const heroStats = document.querySelector('.hero-stats');
+        if (heroStats) {
+          const chip = document.createElement('a');
+          chip.href = 'dashboard.html';
+          chip.style.cssText = 'display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:var(--red);color:#fff;border-radius:var(--rm);font-size:13px;font-weight:600;text-decoration:none;margin-top:16px;transition:background 0.2s;';
+          chip.innerHTML = '⚙️ Ir al panel de administración →';
+          chip.onmouseover = () => chip.style.background = 'var(--red-deep)';
+          chip.onmouseout  = () => chip.style.background = 'var(--red)';
+          heroStats.parentElement.insertBefore(chip, heroStats.nextSibling);
+        }
+      }
+    });
+  }
+})();
+
+function doLogout() {
+  localStorage.removeItem('nexo_token');
+  localStorage.removeItem('nexo_user');
+  window.location.reload();
+}
+</script>
+</body>
+</html>

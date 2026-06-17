@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpicyTech · Espacios</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:        #C0392B;
+      --red-deep:   #96281B;
+      --red-soft:   #E8604C;
+      --red-muted:  #D4614F;
+      --red-pale:   #FEE9E7;
+      --cream:      #FAF6F0;
+      --cream-dark: #F0E8DC;
+      --cream-mid:  #E8DDD0;
+      --sand:       #C9B99A;
+      --dark:       #1C1209;
+      --txt:        #2C1A10;
+      --txt2:       #7A5C44;
+      --txt3:       #A08870;
+      --white:      #FFFFFF;
+      --r:          20px;
+      --rm:         12px;
+      --nav-h:      72px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--cream);
+      color: var(--txt);
+      overflow-x: hidden;
+    }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--cream-dark); }
+    ::-webkit-scrollbar-thumb { background: var(--red-muted); border-radius: 3px; }
+
+    /* ══ NAVBAR ══ */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 200; height: var(--nav-h);
+      padding: 0 5%;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(250,246,240,0.96);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 1px 0 var(--cream-mid);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+    }
+    .nav-logo-mark {
+      width: 36px; height: 36px; background: var(--red);
+      border-radius: 9px; display: flex; align-items: center;
+      justify-content: center; font-size: 17px;
+    }
+    .nav-logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 19px; font-weight: 700; color: var(--dark);
+    }
+    .nav-logo-sub { font-size: 9px; color: var(--txt3); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 1px; }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a { font-size: 13.5px; font-weight: 500; color: var(--txt2); text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active-link { color: var(--red); }
+    .nav-actions { display: flex; gap: 8px; align-items: center; }
+    .btn-nav-ghost {
+      padding: 8px 18px; border: 1.5px solid var(--cream-mid);
+      border-radius: var(--rm); background: transparent;
+      font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 500;
+      color: var(--txt); cursor: pointer; text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-nav-ghost:hover { border-color: var(--red); color: var(--red); }
+    .btn-nav-red {
+      padding: 8px 20px; background: var(--red); border: none;
+      border-radius: var(--rm); font-family: 'Outfit', sans-serif;
+      font-size: 13px; font-weight: 600; color: #fff;
+      cursor: pointer; text-decoration: none;
+      transition: background 0.2s; display: inline-flex; align-items: center;
+    }
+    .btn-nav-red:hover { background: var(--red-deep); }
+
+    /* ══ PAGE HEADER ══ */
+    .page-header {
+      padding: calc(var(--nav-h) + 56px) 5% 56px;
+      max-width: 1280px; margin: 0 auto;
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: 32px; flex-wrap: wrap;
+    }
+    .ph-eyebrow {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--red);
+      margin-bottom: 10px;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .ph-eyebrow::before { content: ''; display: inline-block; width: 18px; height: 2px; background: var(--red); }
+    .ph-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 4.5vw, 58px);
+      font-weight: 900; color: var(--dark); line-height: 1.05;
+    }
+    .ph-title em { font-style: italic; color: var(--red-muted); }
+    .ph-desc { font-size: 15px; color: var(--txt2); line-height: 1.7; font-weight: 300; max-width: 340px; }
+
+    /* ══ FILTER BAR ══ */
+    .filter-bar {
+      max-width: 1280px; margin: 0 auto;
+      padding: 0 5% 36px;
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    }
+    .filter-label { font-size: 12px; font-weight: 600; color: var(--txt3); text-transform: uppercase; letter-spacing: 0.07em; margin-right: 4px; }
+    .filter-btn {
+      padding: 7px 16px; border-radius: 50px;
+      border: 1.5px solid var(--cream-mid);
+      background: var(--white); font-family: 'Outfit', sans-serif;
+      font-size: 12.5px; font-weight: 500; color: var(--txt2);
+      cursor: pointer; transition: all 0.18s;
+    }
+    .filter-btn:hover { border-color: var(--red-muted); color: var(--red); }
+    .filter-btn.active { background: var(--red); border-color: var(--red); color: #fff; }
+
+    /* ══ SPACES GRID ══ */
+    .spaces-section {
+      max-width: 1280px; margin: 0 auto;
+      padding: 0 5% 80px;
+    }
+    .spaces-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 24px;
+    }
+
+    /* ── SPACE CARD ── */
+    .space-card {
+      background: var(--white);
+      border-radius: var(--r);
+      border: 1.5px solid var(--cream-mid);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.2s;
+      animation: cardIn 0.5s ease both;
+    }
+    .space-card:nth-child(1) { animation-delay: 0.05s; }
+    .space-card:nth-child(2) { animation-delay: 0.10s; }
+    .space-card:nth-child(3) { animation-delay: 0.15s; }
+    .space-card:nth-child(4) { animation-delay: 0.20s; }
+    .space-card:nth-child(5) { animation-delay: 0.25s; }
+    .space-card:nth-child(6) { animation-delay: 0.30s; }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .space-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 48px rgba(44,26,16,0.13);
+      border-color: var(--red-muted);
+    }
+    .space-card.selected {
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(192,57,43,0.12), 0 20px 48px rgba(44,26,16,0.13);
+    }
+
+    /* Card illustration */
+    .card-visual {
+      height: 190px;
+      position: relative;
+      overflow: hidden;
+      display: flex; align-items: flex-end;
+    }
+    .card-visual-bg {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    /* Floor plan SVG illustration area */
+    .card-floorplan {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .card-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(28,18,9,0.55) 0%, transparent 60%);
+    }
+    .card-badge-top {
+      position: absolute; top: 14px; right: 14px;
+      background: rgba(250,246,240,0.95);
+      border-radius: 50px; padding: 5px 12px;
+      font-size: 11px; font-weight: 600;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+    }
+    .badge-dot.avail { background: #22C55E; }
+    .badge-dot.busy  { background: #EF4444; }
+    .badge-dot.partial { background: #F59E0B; }
+
+    .card-name-overlay {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 14px 18px 0;
+      color: #fff;
+    }
+    .card-room-id {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; opacity: 0.75; margin-bottom: 2px;
+    }
+    .card-room-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px; font-weight: 700; line-height: 1.1;
+    }
+
+    /* Card body */
+    .card-body { padding: 18px 20px 20px; }
+    .card-meta {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 14px;
+    }
+    .card-meta-item {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 12.5px; color: var(--txt2);
+    }
+    .card-meta-item svg { width: 13px; height: 13px; color: var(--txt3); }
+
+    .card-amenities {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-bottom: 16px;
+    }
+    .amenity-tag {
+      padding: 4px 10px; border-radius: 50px;
+      background: var(--cream-dark);
+      font-size: 11px; font-weight: 500; color: var(--txt2);
+    }
+
+    .card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid var(--cream-mid); padding-top: 14px;
+    }
+    .card-price { font-size: 13px; font-weight: 600; color: var(--red); }
+    .card-price span { font-size: 11px; font-weight: 400; color: var(--txt3); }
+    .btn-card {
+      padding: 7px 18px; background: var(--red); border: none;
+      border-radius: var(--rm); font-family: 'Outfit', sans-serif;
+      font-size: 12.5px; font-weight: 600; color: #fff;
+      cursor: pointer; transition: background 0.18s;
+    }
+    .btn-card:hover { background: var(--red-deep); }
+    .btn-card.selected-btn {
+      background: var(--dark);
+    }
+
+    /* ══ DETAIL PANEL ══ */
+    .detail-panel {
+      max-width: 1280px; margin: 0 auto;
+      padding: 0 5% 80px;
+      display: none;
+    }
+    .detail-panel.show { display: block; }
+
+    .detail-inner {
+      background: var(--white);
+      border-radius: var(--r);
+      border: 1.5px solid var(--cream-mid);
+      overflow: hidden;
+      animation: slideDown 0.4s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .detail-header {
+      background: var(--dark);
+      padding: 32px 36px;
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 24px;
+      flex-wrap: wrap;
+    }
+    .dh-left {}
+    .dh-tag {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--red-soft);
+      margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
+    }
+    .dh-tag::before { content: ''; display: inline-block; width: 14px; height: 2px; background: var(--red-soft); }
+    .dh-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(26px, 3vw, 38px); font-weight: 900;
+      color: var(--cream); line-height: 1.1; margin-bottom: 10px;
+    }
+    .dh-title em { font-style: italic; color: var(--red-soft); }
+    .dh-desc { font-size: 14px; color: var(--sand); line-height: 1.65; max-width: 480px; font-weight: 300; }
+    .dh-right {
+      display: flex; flex-direction: column; align-items: flex-end; gap: 10px;
+    }
+    .dh-price-big {
+      font-family: 'Playfair Display', serif;
+      font-size: 42px; font-weight: 900; color: var(--cream); line-height: 1;
+    }
+    .dh-price-label { font-size: 12px; color: var(--sand); text-align: right; }
+    .dh-meta-row { display: flex; gap: 20px; flex-wrap: wrap; }
+    .dh-meta-item {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 13px; color: var(--sand);
+    }
+    .dh-meta-icon {
+      width: 28px; height: 28px; background: rgba(192,57,43,0.18);
+      border-radius: 7px; display: flex; align-items: center; justify-content: center;
+      font-size: 13px; flex-shrink: 0;
+    }
+    .btn-close-detail {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.6); font-size: 16px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all 0.18s; flex-shrink: 0;
+    }
+    .btn-close-detail:hover { background: rgba(255,255,255,0.15); color: #fff; }
+
+    /* Detail body: two columns */
+    .detail-body {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 0;
+    }
+
+    /* Left: amenities + calendar */
+    .detail-left { padding: 32px 36px; border-right: 1px solid var(--cream-mid); }
+
+    .detail-section-title {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--txt3);
+      margin-bottom: 14px;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .detail-section-title::before { content: ''; display: inline-block; width: 12px; height: 2px; background: var(--red); }
+
+    /* Amenities grid */
+    .amenities-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 10px; margin-bottom: 32px;
+    }
+    .amenity-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 14px; border-radius: var(--rm);
+      background: var(--cream); border: 1px solid var(--cream-mid);
+    }
+    .amenity-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: var(--red-pale); display: flex; align-items: center; justify-content: center;
+      font-size: 15px; flex-shrink: 0;
+    }
+    .amenity-name { font-size: 13px; font-weight: 500; color: var(--txt); }
+    .amenity-desc { font-size: 10.5px; color: var(--txt3); margin-top: 1px; }
+
+    /* Availability calendar */
+    .calendar-wrapper { margin-bottom: 0; }
+    .calendar-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .cal-month {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px; font-weight: 700; color: var(--dark);
+    }
+    .cal-arrow {
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 1.5px solid var(--cream-mid); background: transparent;
+      color: var(--txt2); font-size: 15px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all 0.18s;
+    }
+    .cal-arrow:hover { border-color: var(--red); color: var(--red); }
+
+    .cal-grid {
+      display: grid; grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+    .cal-day-name {
+      text-align: center; font-size: 10px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--txt3); padding: 4px 0 8px;
+    }
+    .cal-day {
+      aspect-ratio: 1; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all 0.15s;
+      position: relative; border: 2px solid transparent;
+    }
+    .cal-day.empty { cursor: default; border: none; }
+    .cal-day.past  { color: var(--cream-mid); cursor: not-allowed; background: transparent; }
+
+    /* Fondo completo de color según disponibilidad */
+    .cal-day.avail   { background: rgba(34,197,94,0.13); color: #166534; border-color: rgba(34,197,94,0.25); }
+    .cal-day.partial { background: rgba(245,158,11,0.13); color: #92400E; border-color: rgba(245,158,11,0.28); }
+    .cal-day.full    { background: rgba(239,68,68,0.10); color: #991B1B; border-color: rgba(239,68,68,0.2); cursor: not-allowed; }
+
+    .cal-day.avail:hover   { background: rgba(34,197,94,0.28); border-color: #22C55E; transform: scale(1.06); }
+    .cal-day.partial:hover { background: rgba(245,158,11,0.28); border-color: #F59E0B; transform: scale(1.06); }
+
+    /* Día seleccionado — rojo sólido con borde blanco interior */
+    .cal-day.selected-day {
+      background: var(--red) !important;
+      color: #fff !important;
+      border-color: var(--red-deep) !important;
+      box-shadow: 0 3px 10px rgba(192,57,43,0.4);
+      transform: scale(1.08);
+    }
+    /* Múltiples días seleccionados — más suave para los no-primarios */
+    .cal-day.selected-extra {
+      background: var(--red-muted) !important;
+      color: #fff !important;
+      border-color: var(--red) !important;
+      box-shadow: 0 2px 6px rgba(192,57,43,0.25);
+    }
+
+    .cal-day.today { outline: 2px solid var(--dark); outline-offset: 1px; }
+    .cal-day.today.selected-day { outline-color: #fff; }
+
+    .cal-legend {
+      display: flex; gap: 12px; margin-top: 14px; flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; color: var(--txt3);
+    }
+    .legend-dot {
+      width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0;
+    }
+
+    /* Time slots — resalte fuerte al seleccionar */
+    .time-section { margin-top: 24px; display: none; }
+    .time-section.show { display: block; }
+    .time-slots-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 7px;
+    }
+    .time-slot {
+      padding: 10px 4px; border-radius: 8px; text-align: center;
+      font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: all 0.15s;
+      border: 2px solid transparent; position: relative;
+    }
+    .time-slot.free {
+      background: var(--cream); color: var(--txt2); border-color: var(--cream-mid);
+    }
+    .time-slot.free:hover {
+      border-color: var(--red); color: var(--red);
+      background: var(--red-pale); transform: scale(1.04);
+    }
+    .time-slot.busy {
+      background: rgba(239,68,68,0.07); color: var(--txt3);
+      border-color: rgba(239,68,68,0.15);
+      text-decoration: line-through; cursor: not-allowed;
+    }
+    .time-slot.sel {
+      background: var(--red); color: #fff; border-color: var(--red-deep);
+      box-shadow: 0 3px 10px rgba(192,57,43,0.35);
+      transform: scale(1.06);
+    }
+    .time-slot.sel::after {
+      content: '✓';
+      position: absolute; top: 2px; right: 5px;
+      font-size: 9px; opacity: 0.8;
+    }
+
+    /* Right: reservation form */
+    .detail-right { padding: 32px 28px; background: var(--cream); }
+
+    .form-section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px; font-weight: 800; color: var(--dark);
+      margin-bottom: 6px;
+    }
+    .form-section-sub {
+      font-size: 13px; color: var(--txt2); font-weight: 300;
+      line-height: 1.5; margin-bottom: 24px;
+    }
+
+    /* Selection summary */
+    .booking-summary {
+      background: var(--white); border-radius: var(--rm);
+      border: 1px solid var(--cream-mid); padding: 14px 16px;
+      margin-bottom: 20px; display: none;
+    }
+    .booking-summary.show { display: block; }
+    .summary-row {
+      display: flex; justify-content: space-between;
+      font-size: 12.5px; margin-bottom: 5px;
+    }
+    .summary-row:last-child { margin-bottom: 0; }
+    .summary-label { color: var(--txt3); }
+    .summary-val { font-weight: 600; color: var(--txt); }
+    .summary-total { border-top: 1px solid var(--cream-mid); margin-top: 8px; padding-top: 8px; }
+    .summary-total .summary-label { font-weight: 600; color: var(--txt2); }
+    .summary-total .summary-val { color: var(--red); font-size: 14px; }
+
+    /* Form fields */
+    .rform-field { margin-bottom: 14px; }
+    .rform-label {
+      display: block; font-size: 11px; font-weight: 600;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      color: var(--txt2); margin-bottom: 6px;
+    }
+    .rform-input, .rform-select, .rform-textarea {
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid var(--cream-mid); border-radius: var(--rm);
+      background: var(--white); font-family: 'Outfit', sans-serif;
+      font-size: 13.5px; color: var(--txt); outline: none;
+      transition: border-color 0.18s, box-shadow 0.18s;
+      appearance: none;
+    }
+    .rform-input:focus, .rform-select:focus, .rform-textarea:focus {
+      border-color: var(--red); box-shadow: 0 0 0 3px rgba(192,57,43,0.07);
+    }
+    .rform-input::placeholder, .rform-textarea::placeholder { color: var(--sand); }
+    .rform-textarea { height: 80px; resize: none; }
+    .rform-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    /* Alert */
+    .rform-alert {
+      padding: 11px 14px; border-radius: var(--rm);
+      font-size: 13px; line-height: 1.5; margin-bottom: 14px; display: none;
+    }
+    .rform-alert.show { display: block; }
+    .rform-alert.err { background: var(--red-pale); color: var(--red-deep); border: 1px solid rgba(192,57,43,0.15); }
+    .rform-alert.ok  { background: #F0FBF4; color: #166534; border: 1px solid rgba(22,101,52,0.15); }
+
+    .btn-reserve {
+      width: 100%; padding: 14px; background: var(--red); border: none;
+      border-radius: var(--rm); font-family: 'Outfit', sans-serif;
+      font-size: 14.5px; font-weight: 600; color: #fff;
+      cursor: pointer; margin-top: 4px;
+      transition: background 0.18s, transform 0.1s, box-shadow 0.18s;
+      box-shadow: 0 5px 18px rgba(192,57,43,0.24);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-reserve:hover { background: var(--red-deep); transform: translateY(-1px); }
+    .btn-reserve:disabled { opacity: 0.6; pointer-events: none; }
+
+    .terms-note {
+      text-align: center; font-size: 11px; color: var(--txt3);
+      margin-top: 10px; line-height: 1.5;
+    }
+
+    /* ══ RESPONSIVE ══ */
+    /* ══ AUTH GUARD ══ */
+    .auth-guard-overlay {
+      position: fixed; inset: 0;
+      z-index: 300;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(250,246,240,0.15);
+      backdrop-filter: blur(12px) saturate(0.7);
+      -webkit-backdrop-filter: blur(12px) saturate(0.7);
+      padding: 20px;
+    }
+    .auth-guard-card {
+      background: var(--white);
+      border-radius: 24px;
+      border: 1.5px solid var(--cream-mid);
+      box-shadow: 0 32px 80px rgba(44,26,16,0.18);
+      padding: 48px 44px;
+      text-align: center;
+      max-width: 420px; width: 100%;
+      animation: guardIn 0.5s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes guardIn {
+      from { opacity: 0; transform: translateY(24px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .guard-icon {
+      width: 72px; height: 72px;
+      background: var(--red-pale);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 30px; margin: 0 auto 20px;
+      border: 2px solid rgba(192,57,43,0.15);
+    }
+    .guard-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px; font-weight: 800;
+      color: var(--dark); margin-bottom: 10px; line-height: 1.2;
+    }
+    .guard-title em { font-style: italic; color: var(--red-muted); }
+    .guard-desc {
+      font-size: 14px; color: var(--txt2); line-height: 1.65;
+      font-weight: 300; margin-bottom: 28px;
+    }
+    .guard-btns { display: flex; flex-direction: column; gap: 10px; }
+    .btn-guard-primary {
+      display: block; width: 100%; padding: 13px;
+      background: var(--red); border: none; border-radius: var(--rm);
+      font-family: 'Outfit', sans-serif; font-size: 14.5px; font-weight: 600;
+      color: #fff; cursor: pointer; text-decoration: none;
+      transition: background 0.18s, transform 0.1s;
+      box-shadow: 0 5px 18px rgba(192,57,43,0.25);
+    }
+    .btn-guard-primary:hover { background: var(--red-deep); transform: translateY(-1px); }
+    .btn-guard-ghost {
+      display: block; width: 100%; padding: 12px;
+      background: transparent; border: 1.5px solid var(--cream-mid);
+      border-radius: var(--rm); font-family: 'Outfit', sans-serif;
+      font-size: 13.5px; font-weight: 500; color: var(--txt2);
+      cursor: pointer; text-decoration: none;
+      transition: border-color 0.18s, color 0.18s;
+    }
+    .btn-guard-ghost:hover { border-color: var(--red); color: var(--red); }
+    .guard-note {
+      font-size: 11px; color: var(--txt3); margin-top: 14px; line-height: 1.5;
+    }
+
+    @media (max-width: 1024px) {
+      .detail-body { grid-template-columns: 1fr; }
+      .detail-left { border-right: none; border-bottom: 1px solid var(--cream-mid); }
+    }
+    @media (max-width: 860px) {
+      .spaces-grid { grid-template-columns: 1fr; }
+      nav .nav-links { display: none; }
+      .amenities-grid { grid-template-columns: 1fr; }
+      .time-slots-grid { grid-template-columns: repeat(3,1fr); }
+      .rform-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .page-header { flex-direction: column; align-items: flex-start; }
+      .detail-header { flex-direction: column; }
+      .dh-right { align-items: flex-start; }
+    }
+/* ── TERMS MODAL ── */
+.tmodal-bg{position:fixed;inset:0;background:rgba(28,18,9,.6);z-index:9999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);padding:16px;}
+.tmodal-bg.show{display:flex;}
+.tmodal-box{background:var(--white);border-radius:20px;max-width:560px;width:100%;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 32px 80px rgba(28,18,9,.3);animation:tmIn .22s ease;}
+@keyframes tmIn{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+.tmodal-head{padding:24px 28px 16px;border-bottom:1px solid var(--cream-mid);flex-shrink:0;}
+.tmodal-eyebrow{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:6px;}
+.tmodal-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:var(--dark);}
+.tmodal-body{overflow-y:auto;padding:20px 28px;flex:1;}
+.tmodal-body::-webkit-scrollbar{width:4px;}
+.tmodal-body::-webkit-scrollbar-thumb{background:var(--cream-mid);border-radius:4px;}
+.tc-section{margin-bottom:20px;}
+.tc-section-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--red);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--cream-mid);}
+.tc-clause{margin-bottom:10px;}
+.tc-clause-num{font-size:11px;font-weight:700;color:var(--dark);margin-bottom:3px;}
+.tc-clause-text{font-size:12.5px;color:var(--txt2);line-height:1.65;}
+.tmodal-foot{padding:16px 28px;border-top:1px solid var(--cream-mid);flex-shrink:0;}
+.tmodal-btn-close{width:100%;padding:11px;background:var(--red);border:none;border-radius:var(--rm);font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;color:#fff;cursor:pointer;transition:background .18s;}
+.tmodal-btn-close:hover{background:var(--red-deep);}
+</style>
+</head>
+<body>
+
+<!-- ══ NAVBAR ══ -->
+<nav id="navbar">
+  <a href="home.html" class="nav-logo">
+    <div class="nav-logo-mark">🌶️</div>
+    <div>
+      <div class="nav-logo-text">SpicyTech</div>
+      <div class="nav-logo-sub">Coworking Space</div>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="home.html#features">Servicios</a></li>
+    <li><a href="spaces.html" class="active-link">Espacios</a></li>
+    <li><a href="home.html#pricing">Precios</a></li>
+    <li><a href="home.html#contact">Contacto</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="login.html" class="btn-nav-ghost">Iniciar sesión</a>
+    <a href="login.html#signup" class="btn-nav-red">Registrarse →</a>
+  </div>
+</nav>
+
+<!-- ══ BOOKING AUTH GUARD MODAL ══ -->
+<div class="auth-guard-overlay" id="auth-guard" style="display:none;">
+  <div class="auth-guard-card">
+    <div class="guard-icon">🔐</div>
+    <h2 class="guard-title">Iniciá sesión para <em>reservar</em></h2>
+    <p class="guard-desc">Podés explorar todos los espacios libremente. Para hacer una reserva necesitás una cuenta.</p>
+    <div class="guard-btns">
+      <a href="login.html#signup" class="btn-guard-primary">Crear cuenta gratis →</a>
+      <a href="login.html" class="btn-guard-ghost">Ya tengo cuenta · Iniciar sesión</a>
+    </div>
+    <p class="guard-note">🔒 Tus datos están protegidos. Sin spam, sin compromisos.</p>
+  </div>
+</div>
+
+<!-- ══ PAGE HEADER ══ -->
+<div class="page-header">
+  <div>
+    <div class="ph-eyebrow">Explorar espacios</div>
+    <h1 class="ph-title">Encontrá tu<br>espacio <em>ideal</em></h1>
+  </div>
+  <p class="ph-desc">Seleccioná cualquier sala para ver disponibilidad, comodidades y hacer tu reserva al instante.</p>
+</div>
+
+<!-- ══ FILTER BAR ══ -->
+<div class="filter-bar">
+  <span class="filter-label">Filtrar:</span>
+  <button class="filter-btn active" onclick="filterSpaces('all', this)">Todos</button>
+  <button class="filter-btn" onclick="filterSpaces('sala', this)">Salas de reunión</button>
+  <button class="filter-btn" onclick="filterSpaces('privada', this)">Oficinas privadas</button>
+  <button class="filter-btn" onclick="filterSpaces('capacitacion', this)">Capacitación</button>
+  <button class="filter-btn" onclick="filterSpaces('avail', this)">✓ Disponibles hoy</button>
+</div>
+
+<!-- ══ SPACES GRID ══ -->
+<section class="spaces-section">
+  <div class="spaces-grid" id="spaces-grid">
+    <!-- Cards rendered by JS -->
+  </div>
+</section>
+
+<!-- ══ DETAIL PANEL ══ -->
+<div class="detail-panel" id="detail-panel">
+  <div class="detail-inner" id="detail-inner">
+    <!-- Rendered by JS -->
+  </div>
+</div>
+
+<!-- Spacer -->
+<div style="height: 60px;"></div>
+
+
+<script>
+/* ══════════════════════════════════════════════
+   SPACES DATA (sin datos falsos de disponibilidad)
+══════════════════════════════════════════════ */
+const SPACES = [
+  {
+    id: 'A1', type: 'sala', name: 'Sala Roja A1',
+    desc: 'Sala de reuniones ejecutiva con luz natural, mesa oval para 12 personas y sistema de videoconferencia integrado.',
+    capacity: 12, area: '35 m²', price: 800, priceUnit: 'hora',
+    color: ['#C0392B','#E8604C'], emoji: '🏢',
+    amenities: [
+      { icon:'📺', name:'Pantalla 75"', desc:'4K con HDMI y wireless' },
+      { icon:'🎙️', name:'Videoconferencia', desc:'Cámara y micrófonos 360°' },
+      { icon:'🖊️', name:'Pizarrón blanco', desc:'Magnético, 2x1m' },
+      { icon:'❄️', name:'Climatización', desc:'Split zonal independiente' },
+      { icon:'🔌', name:'Conectores', desc:'HDMI, USB-C, adaptadores' },
+      { icon:'🔇', name:'Paredes acústicas', desc:'Aislamiento total' },
+    ],
+    timeSlots: ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00'],
+  },
+  {
+    id: 'B2', type: 'sala', name: 'Sala Crema B2',
+    desc: 'Sala versátil para workshops y brainstorming. Mobiliario modular reconfigurable y proyector de alta definición.',
+    capacity: 8, area: '24 m²', price: 600, priceUnit: 'hora',
+    color: ['#D4614F','#C9B99A'], emoji: '💡',
+    amenities: [
+      { icon:'📽️', name:'Proyector HD', desc:'3000 lúmenes, Full HD' },
+      { icon:'🪑', name:'Mobiliario modular', desc:'Reconfigurable libremente' },
+      { icon:'🖊️', name:'Pizarrón blanco', desc:'Magnético + rotafolios' },
+      { icon:'💡', name:'Iluminación LED', desc:'Regulable por zonas' },
+      { icon:'📡', name:'WiFi dedicado', desc:'Conexión exclusiva 200 Mbps' },
+      { icon:'☕', name:'Kitchenette', desc:'Máquina de café incluida' },
+    ],
+    timeSlots: ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00'],
+  },
+  {
+    id: 'C1', type: 'privada', name: 'Oficina Privada C1',
+    desc: 'Oficina totalmente cerrada y silenciosa para equipos de hasta 5 personas. Acceso con tarjeta individual.',
+    capacity: 5, area: '20 m²', price: 5500, priceUnit: 'mes',
+    color: ['#1C1209','#7A5C44'], emoji: '🔐',
+    amenities: [
+      { icon:'🚪', name:'Acceso con tarjeta', desc:'Control 24/7 individual' },
+      { icon:'🔒', name:'Total privacidad', desc:'Paredes y puerta insonorizada' },
+      { icon:'🖥️', name:'5 puestos fijos', desc:'Monitors y periféricos' },
+      { icon:'❄️', name:'Climatización', desc:'Control independiente' },
+      { icon:'📦', name:'Almacenamiento', desc:'Armario y lockers propios' },
+      { icon:'🏷️', name:'Cartel personalizado', desc:'Logo de tu empresa' },
+    ],
+    timeSlots: [],
+  },
+  {
+    id: 'D3', type: 'capacitacion', name: 'Aula Magna D3',
+    desc: 'Sala de capacitación para eventos, trainings y presentaciones. Capacidad para 25 personas en formato auditorio.',
+    capacity: 25, area: '60 m²', price: 1200, priceUnit: 'hora',
+    color: ['#96281B','#C0392B'], emoji: '🎓',
+    amenities: [
+      { icon:'📺', name:'Pantalla dual 85"', desc:'Dos pantallas sincronizadas' },
+      { icon:'🎙️', name:'Micrófono inalámbrico', desc:'Sistema de audio profesional' },
+      { icon:'💺', name:'25 butacas', desc:'Plegables ergonómicas' },
+      { icon:'🖊️', name:'Pizarra interactiva', desc:'Táctil 86" con software' },
+      { icon:'📷', name:'Grabación integrada', desc:'Cámaras y streaming HD' },
+      { icon:'🔇', name:'Aislamiento acústico', desc:'Certificación pro' },
+    ],
+    timeSlots: ['08:00','10:00','12:00','14:00','16:00','18:00'],
+  },
+  {
+    id: 'E2', type: 'privada', name: 'Oficina Suite E2',
+    desc: 'Oficina premium con vista panorámica, sala de espera privada y dirección postal oficial incluida.',
+    capacity: 8, area: '38 m²', price: 9500, priceUnit: 'mes',
+    color: ['#2C1A10','#D4614F'], emoji: '🏆',
+    amenities: [
+      { icon:'🌅', name:'Vista panorámica', desc:'Piso 4, orientación norte' },
+      { icon:'🛋️', name:'Sala de espera', desc:'Para recibir clientes' },
+      { icon:'📮', name:'Dirección postal', desc:'Oficial para facturación' },
+      { icon:'☕', name:'Servicio de café', desc:'Para vos y tus visitas' },
+      { icon:'🔒', name:'Bóveda de seguridad', desc:'Para documentos y valores' },
+      { icon:'🖨️', name:'Impresora dedicada', desc:'Color + escáner + fax' },
+    ],
+    timeSlots: [],
+  },
+  {
+    id: 'F1', type: 'sala', name: 'Sala Focus F1',
+    desc: 'Sala compacta ideal para entrevistas, reuniones 1:1 o trabajo en silencio. Totalmente insonorizada.',
+    capacity: 4, area: '12 m²', price: 400, priceUnit: 'hora',
+    color: ['#A08870','#7A5C44'], emoji: '🎧',
+    amenities: [
+      { icon:'🔇', name:'Insonorización total', desc:'Cero ruido externo' },
+      { icon:'📺', name:'Monitor 27"', desc:'Para presentaciones pequeñas' },
+      { icon:'💡', name:'Luz regulable', desc:'Temperatura de color ajustable' },
+      { icon:'🌿', name:'Planta natural', desc:'Ambiente relajante' },
+      { icon:'📡', name:'WiFi exclusivo', desc:'100 Mbps dedicados' },
+      { icon:'🎙️', name:'Micrófono', desc:'Perfecto para grabaciones' },
+    ],
+    timeSlots: ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00'],
+  },
+];
+
+/* ══════════════════════════════════════════════
+   RESERVAS: CONECTADAS A LA BASE DE DATOS
+══════════════════════════════════════════════ */
+let DB_RESERVAS = []; // Acá vamos a guardar lo que venga de la API
+
+// Esta función ahora devuelve la lista real de la base de datos
+function getAllReservations() {
+  return DB_RESERVAS;
+}
+
+// Ya no guardamos en localStorage, esta función la vaciamos
+function saveReservations(r) {
+  console.log('Reservas gestionadas por API/Supabase', r);
+}
+
+function isBlockingReservation(status) {
+  return ['pending', 'pendiente', 'confirmed', 'confirmada', 'activa'].includes((status || '').toLowerCase());
+}
+
+// Slots ocupados para un espacio+fecha (ahora lee de la API)
+function getBusySlotsForDate(spaceId, dateStr) {
+  const reservations = getAllReservations();
+  const busy = [];
+  reservations
+    .filter(r => r.spaceId === spaceId && r.date === dateStr && isBlockingReservation(r.status))
+    .forEach(r => { if (r.slots) r.slots.forEach(s => busy.push(s)); });
+  return busy;
+}
+
+// Calcula estado del día (avail/partial/full) basado en reservas reales
+function getDayStatus(spaceId, dateStr, allSlots) {
+  if (allSlots.length === 0) {
+    // Oficina mensual: avail siempre salvo que tenga reserva confirmada/pendiente ese mes
+    const reservations = getAllReservations();
+    const hasMontly = reservations.some(r => r.spaceId === spaceId && r.date === dateStr && isBlockingReservation(r.status));
+    return hasMontly ? 'full' : 'avail';
+  }
+  const busy = getBusySlotsForDate(spaceId, dateStr, allSlots);
+  if (busy.length === 0) return 'avail';
+  if (busy.length >= allSlots.length) return 'full';
+  return 'partial';
+}
+
+/* ══════════════════════════════════════════════
+   SESSION
+══════════════════════════════════════════════ */
+function getSession() {
+  const token = localStorage.getItem('nexo_token');
+  const raw   = localStorage.getItem('nexo_user');
+  let valid = false, role = null, username = null;
+  if (token) {
+    try {
+      const parts = token.split('.');
+      if (parts.length === 3) {
+        // Añadir padding si falta, soportar base64 URL-safe
+        const pad = s => s + '==='.slice((s.length + 3) % 4);
+        const payload = JSON.parse(decodeURIComponent(escape(atob(pad(parts[1])))));
+        valid = !payload.exp || payload.exp > Math.floor(Date.now() / 1000);
+      }
+    } catch(e) { valid = false; }
+  }
+  // Fallback: si el token existe pero no se puede decodificar, confiar en nexo_user
+  if (!valid && token && raw) {
+    try { JSON.parse(raw); valid = true; } catch(e) {}
+  }
+  if (raw) {
+    try { const u = JSON.parse(raw); role = u.role; username = u.username; } catch(e) {}
+  }
+  return { valid, role, username };
+}
+
+/* ══════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════ */
+let selectedSpace  = null;
+let selectedDay    = null;      // último día clickeado (para compatibilidad)
+let selectedDays   = {};        // { 'yyyy-mm-dd': ['08:00','09:00'], ... }
+let selectedSlots  = [];        // slots del día activo (selectedDay)
+let currentFilter  = 'all';
+let calYear, calMonth;
+
+const today = new Date();
+calYear  = today.getFullYear();
+calMonth = today.getMonth();
+
+/* ══════════════════════════════════════════════
+   RENDER CARDS — status calculado en tiempo real
+══════════════════════════════════════════════ */
+function getSpaceStatusToday(sp) {
+  const todayStr = formatDate(today);
+  return getDayStatus(sp.id, todayStr, sp.timeSlots);
+}
+
+function formatDate(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function statusLabel(s) {
+  if (s === 'avail')   return { dot:'avail',   text:'Disponible' };
+  if (s === 'partial') return { dot:'partial', text:'Parcial' };
+  return                      { dot:'busy',    text:'Ocupada hoy' };
+}
+
+function renderCards(filter = 'all') {
+  const grid = document.getElementById('spaces-grid');
+  const filtered = SPACES.filter(sp => {
+    if (filter === 'all')   return true;
+    if (filter === 'avail') return getSpaceStatusToday(sp) === 'avail';
+    return sp.type === filter;
+  });
+
+  grid.innerHTML = filtered.map(sp => {
+    const liveStatus = getSpaceStatusToday(sp);
+    const sl = statusLabel(liveStatus);
+    const isSelected = selectedSpace && selectedSpace.id === sp.id;
+    return `
+    <div class="space-card ${isSelected ? 'selected' : ''}" id="card-${sp.id}" onclick="selectSpace('${sp.id}')">
+      <div class="card-visual">
+        <div class="card-visual-bg">
+          <div class="card-floorplan" style="background: linear-gradient(135deg, ${sp.color[0]} 0%, ${sp.color[1]} 100%);">
+            <svg width="100%" height="100%" viewBox="0 0 340 190" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;opacity:0.18">
+              <rect x="30" y="20" width="280" height="150" rx="4" fill="none" stroke="white" stroke-width="2"/>
+              <path d="M150 170 Q165 155 180 170" fill="none" stroke="white" stroke-width="1.5"/>
+              <line x1="150" y1="170" x2="150" y2="160" stroke="white" stroke-width="1.5"/>
+              <rect x="90" y="65" width="160" height="60" rx="30" fill="white" fill-opacity="0.3"/>
+              <rect x="60" y="75" width="20" height="14" rx="3" fill="white" fill-opacity="0.4"/>
+              <rect x="60" y="101" width="20" height="14" rx="3" fill="white" fill-opacity="0.4"/>
+              <rect x="115" y="38" width="14" height="18" rx="3" fill="white" fill-opacity="0.4"/>
+              <rect x="155" y="38" width="14" height="18" rx="3" fill="white" fill-opacity="0.4"/>
+              <rect x="195" y="38" width="14" height="18" rx="3" fill="white" fill-opacity="0.4"/>
+              <rect x="260" y="75" width="20" height="14" rx="3" fill="white" fill-opacity="0.4"/>
+              <rect x="260" y="101" width="20" height="14" rx="3" fill="white" fill-opacity="0.4"/>
+              <rect x="115" y="134" width="14" height="18" rx="3" fill="white" fill-opacity="0.4"/>
+              <rect x="155" y="134" width="14" height="18" rx="3" fill="white" fill-opacity="0.4"/>
+              <rect x="195" y="134" width="14" height="18" rx="3" fill="white" fill-opacity="0.4"/>
+            </svg>
+            <div style="position:absolute;font-size:52px;opacity:0.25;">${sp.emoji}</div>
+          </div>
+        </div>
+        <div class="card-overlay"></div>
+        <div class="card-badge-top">
+          <span class="badge-dot ${sl.dot}"></span>
+          ${sl.text}
+        </div>
+        <div class="card-name-overlay">
+          <div class="card-room-id">Sala ${sp.id}</div>
+          <div class="card-room-name">${sp.name}</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-meta">
+          <div class="card-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            ${sp.capacity} personas
+          </div>
+          <div class="card-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            ${sp.area}
+          </div>
+        </div>
+        <div class="card-amenities">
+          ${sp.amenities.slice(0,3).map(a => `<span class="amenity-tag">${a.icon} ${a.name}</span>`).join('')}
+          ${sp.amenities.length > 3 ? `<span class="amenity-tag" style="background:var(--red-pale);color:var(--red);">+${sp.amenities.length-3} más</span>` : ''}
+        </div>
+        <div class="card-footer">
+          <div class="card-price">$${sp.price.toLocaleString()} <span>/ ${sp.priceUnit}</span></div>
+          <button class="btn-card ${isSelected ? 'selected-btn' : ''}" onclick="event.stopPropagation(); selectSpace('${sp.id}')">
+            ${isSelected ? '✓ Seleccionada' : 'Ver y reservar'}
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ══════════════════════════════════════════════
+   SELECT SPACE
+══════════════════════════════════════════════ */
+function selectSpace(id) {
+  const sp = SPACES.find(s => s.id === id);
+  if (!sp) return;
+  if (selectedSpace && selectedSpace.id === id) {
+    selectedSpace = null; selectedDay = null; selectedSlots = [];
+    document.getElementById('detail-panel').classList.remove('show');
+    renderCards(currentFilter); return;
+  }
+  selectedSpace = sp; selectedDay = null; selectedSlots = [];
+  renderCards(currentFilter);
+  renderDetail(sp);
+  setTimeout(() => {
+    document.getElementById('detail-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 80);
+}
+
+/* ══════════════════════════════════════════════
+   RENDER DETAIL
+══════════════════════════════════════════════ */
+function typeLabel(t) {
+  if (t === 'sala')         return 'Sala de reuniones';
+  if (t === 'privada')      return 'Oficina privada';
+  if (t === 'capacitacion') return 'Sala de capacitación';
+  return t;
+}
+
+function renderDetail(sp) {
+  const panel = document.getElementById('detail-panel');
+  panel.classList.add('show');
+  const liveStatus = getSpaceStatusToday(sp);
+  document.getElementById('detail-inner').innerHTML = `
+    <div class="detail-header">
+      <div class="dh-left">
+        <div class="dh-tag">Sala ${sp.id} · ${typeLabel(sp.type)}</div>
+        <h2 class="dh-title">${sp.name.split(' ').map((w,i)=> i===sp.name.split(' ').length-1 ? `<em>${w}</em>` : w).join(' ')}</h2>
+        <p class="dh-desc">${sp.desc}</p>
+        <div class="dh-meta-row" style="margin-top:16px;">
+          <div class="dh-meta-item"><div class="dh-meta-icon">👥</div> Hasta ${sp.capacity} personas</div>
+          <div class="dh-meta-item"><div class="dh-meta-icon">📐</div> ${sp.area}</div>
+          <div class="dh-meta-item"><div class="dh-meta-icon">${liveStatus==='avail'?'✅':liveStatus==='partial'?'🟡':'🔴'}</div> ${statusLabel(liveStatus).text}</div>
+        </div>
+      </div>
+      <div class="dh-right">
+        <button class="btn-close-detail" onclick="selectSpace('${sp.id}')">✕</button>
+        <div>
+          <div class="dh-price-big">$${sp.price.toLocaleString()}</div>
+          <div class="dh-price-label">por ${sp.priceUnit}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-body">
+      <div class="detail-left">
+        <div class="detail-section-title">Comodidades y equipamiento</div>
+        <div class="amenities-grid">
+          ${sp.amenities.map(a => `
+            <div class="amenity-item">
+              <div class="amenity-icon">${a.icon}</div>
+              <div>
+                <div class="amenity-name">${a.name}</div>
+                <div class="amenity-desc">${a.desc}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="detail-section-title">Disponibilidad</div>
+        <div class="calendar-wrapper">
+          <div class="calendar-nav">
+            <button class="cal-arrow" onclick="prevMonth()">‹</button>
+            <span class="cal-month" id="cal-month-label"></span>
+            <button class="cal-arrow" onclick="nextMonth()">›</button>
+          </div>
+          <div class="cal-grid" id="cal-grid"></div>
+          <div class="cal-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#22C55E"></div> Disponible</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#F59E0B"></div> Parcial</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#EF4444"></div> Completo</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--cream-mid)"></div> No lab./pasado</div>
+          </div>
+        </div>
+
+        ${sp.timeSlots.length > 0 ? `
+        <div class="time-section" id="time-section">
+          <div class="detail-section-title" style="margin-top:24px;">Horarios disponibles — <span id="selected-date-label" style="color:var(--red);font-style:italic;text-transform:none;font-size:12px;letter-spacing:0;"></span></div>
+          <div class="time-slots-grid" id="time-slots-grid"></div>
+        </div>
+        ` : ''}
+      </div>
+
+      <div class="detail-right">
+        <div class="form-section-title">Hacer reserva</div>
+        <p class="form-section-sub">Completá tus datos y enviá tu solicitud. Un administrador la confirmará.</p>
+
+        <div class="booking-summary" id="booking-summary">
+          <div class="summary-row"><span class="summary-label">Espacio</span><span class="summary-val" id="sum-space">—</span></div>
+          <div class="summary-row"><span class="summary-label">Fecha</span><span class="summary-val" id="sum-date">—</span></div>
+          <div class="summary-row" id="sum-time-row" style="display:none;"><span class="summary-label">Horario</span><span class="summary-val" id="sum-time">—</span></div>
+          <div class="summary-row summary-total"><span class="summary-label">Total estimado</span><span class="summary-val" id="sum-total">—</span></div>
+        </div>
+
+        <div class="rform-alert" id="rform-alert"></div>
+
+        <div class="rform-row">
+          <div class="rform-field">
+            <label class="rform-label">Nombre</label>
+            <input class="rform-input" type="text" id="rf-nombre" placeholder="Tu nombre">
+          </div>
+          <div class="rform-field">
+            <label class="rform-label">Apellido</label>
+            <input class="rform-input" type="text" id="rf-apellido" placeholder="Tu apellido">
+          </div>
+        </div>
+        <div class="rform-field">
+          <label class="rform-label">Email de contacto</label>
+          <input class="rform-input" type="email" id="rf-email" placeholder="tu@email.com">
+        </div>
+        <div class="rform-field">
+          <label class="rform-label">Teléfono (opcional)</label>
+          <input class="rform-input" type="tel" id="rf-tel" placeholder="+54 11 0000-0000">
+        </div>
+        ${sp.priceUnit === 'mes' ? `
+        <div class="rform-field">
+          <label class="rform-label">Fecha de inicio</label>
+          <input class="rform-input" type="date" id="rf-fecha-inicio" min="${formatDate(today)}">
+        </div>
+        <div class="rform-field">
+          <label class="rform-label">Duración</label>
+          <select class="rform-select" id="rf-duracion">
+            <option value="1">1 mes</option>
+            <option value="3">3 meses</option>
+            <option value="6">6 meses</option>
+            <option value="12">12 meses</option>
+          </select>
+        </div>
+        ` : ''}
+        <div class="rform-field">
+          <label class="rform-label">Notas adicionales</label>
+          <textarea class="rform-textarea" id="rf-notas" placeholder="¿Algún requerimiento especial?"></textarea>
+        </div>
+
+        <div style="background:var(--cream-dark);border:1px solid var(--cream-mid);border-radius:10px;padding:11px 14px;font-size:12px;color:var(--txt2);margin-bottom:14px;line-height:1.5;">
+          ⏳ Tu reserva quedará <strong>pendiente de aprobación</strong> hasta que un administrador la confirme. Podés ver el estado en <a href="mis-reservas.html" style="color:var(--red);text-decoration:none;font-weight:600;">Mis reservas</a>.
+        </div>
+        <button class="btn-reserve" onclick="submitReserva()">
+          Enviar solicitud →
+        </button>
+        <p class="terms-note">Al confirmar aceptás los <a href="terminos.html" target="_blank" style="color:var(--red);text-decoration:none;font-weight:500;">términos y condiciones</a>. Sin cargos hasta la confirmación.</p>
+      </div>
+    </div>
+  `;
+  renderCalendar();
+  updateSummary();
+}
+
+/* ══════════════════════════════════════════════
+   CALENDAR — días laborables reales (Lun–Sáb)
+══════════════════════════════════════════════ */
+const MONTHS_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DAYS_ES   = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+
+function isWorkday(date) {
+  const dow = date.getDay();
+  return dow >= 1 && dow <= 6; // Lunes a Sábado
+}
+
+function renderCalendar() {
+  if (!selectedSpace) return;
+  const lbl  = document.getElementById('cal-month-label');
+  const grid = document.getElementById('cal-grid');
+  if (!lbl || !grid) return;
+  lbl.textContent = `${MONTHS_ES[calMonth]} ${calYear}`;
+  const firstDay    = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  let html = DAYS_ES.map(d => `<div class="cal-day-name">${d}</div>`).join('');
+  for (let i = 0; i < firstDay; i++) html += `<div class="cal-day empty"></div>`;
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date    = new Date(calYear, calMonth, d);
+    const isPast  = date < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const isToday = date.toDateString() === today.toDateString();
+    const isWork  = isWorkday(date);
+    const dateStr = formatDate(date);
+    const isSel   = dateStr in selectedDays;
+    const isActive = selectedDay === dateStr;
+    let cls = 'cal-day';
+    if (isPast || !isWork) {
+      cls += ' past';
+    } else {
+      const st = getDayStatus(selectedSpace.id, dateStr, selectedSpace.timeSlots);
+      cls += st === 'avail' ? ' avail' : st === 'partial' ? ' partial' : ' full';
+    }
+    if (isToday) cls += ' today';
+    if (isActive) cls += ' selected-day';
+    else if (isSel) cls += ' selected-extra';
+    const canClick = !isPast && isWork &&
+      getDayStatus(selectedSpace.id, formatDate(date), selectedSpace.timeSlots) !== 'full';
+    // Mostrar tick si tiene slots seleccionados
+    const tickCount = isSel && selectedDays[dateStr]?.length > 0
+      ? `<span style="position:absolute;top:2px;right:4px;font-size:8px;opacity:.85;">✓${selectedDays[dateStr].length}</span>`
+      : '';
+    html += `<div class="${cls}" ${canClick ? `onclick="selectDay('${dateStr}')"` : ''} title="${canClick ? dateStr : ''}">
+      ${d}${tickCount}
+    </div>`;
+  }
+  grid.innerHTML = html;
+}
+
+function prevMonth() {
+  calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; }
+  selectedDay = null; selectedSlots = []; selectedDays = {};
+  renderCalendar(); updateSummary(); hideTimeSection();
+}
+function nextMonth() {
+  calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; }
+  selectedDay = null; selectedSlots = []; selectedDays = {};
+  renderCalendar(); updateSummary(); hideTimeSection();
+}
+function hideTimeSection() {
+  const ts = document.getElementById('time-section');
+  if (ts) ts.classList.remove('show');
+}
+
+function selectDay(dateStr) {
+  // Toggle: si ya está seleccionado, deseleccionar
+  if (dateStr in selectedDays && selectedDay === dateStr) {
+    delete selectedDays[dateStr];
+    // Activar el último día restante si queda alguno
+    const remaining = Object.keys(selectedDays);
+    selectedDay   = remaining.length > 0 ? remaining[remaining.length - 1] : null;
+    selectedSlots = selectedDay ? (selectedDays[selectedDay] || []) : [];
+    renderCalendar();
+    updateSummary();
+    if (selectedDay && selectedSpace.timeSlots.length > 0) showTimeSection(selectedDay);
+    else hideTimeSection();
+    return;
+  }
+  // Nuevo día: si no es oficina mensual, agregar al mapa
+  if (!(dateStr in selectedDays)) selectedDays[dateStr] = [];
+  selectedDay   = dateStr;
+  selectedSlots = selectedDays[dateStr]; // referencia
+  renderCalendar();
+  updateSummary();
+  if (selectedSpace.timeSlots.length > 0) showTimeSection(dateStr);
+}
+
+function showTimeSection(dateStr) {
+  const timeSection = document.getElementById('time-section');
+  if (!timeSection) return;
+  timeSection.classList.add('show');
+  const parts = dateStr.split('-');
+  const lbl = document.getElementById('selected-date-label');
+  if (lbl) lbl.innerHTML = `<span style="font-weight:700;color:var(--red)">${parseInt(parts[2])} de ${MONTHS_ES[parseInt(parts[1])-1]}</span> <span style="color:var(--txt3);font-size:11px;">(click en otro día para agregar)</span>`;
+  renderTimeSlots();
+}
+
+/* ══════════════════════════════════════════════
+   TIME SLOTS — basados en reservas reales
+══════════════════════════════════════════════ */
+function renderTimeSlots() {
+  const grid = document.getElementById('time-slots-grid');
+  if (!grid || !selectedSpace || !selectedDay) return;
+  const busySlots = getBusySlotsForDate(selectedSpace.id, selectedDay);
+  grid.innerHTML = selectedSpace.timeSlots.map(t => {
+    const isBusy = busySlots.includes(t);
+    const isSel  = selectedSlots.includes(t);
+    return `<div class="time-slot ${isBusy ? 'busy' : isSel ? 'sel' : 'free'}"
+      ${!isBusy ? `onclick="toggleSlot('${t}')"` : ''}>
+      ${t}${isBusy ? '<br><span style="font-size:9px;opacity:.7">Ocupado</span>' : ''}
+    </div>`;
+  }).join('');
+}
+
+function toggleSlot(t) {
+  const idx = selectedSlots.indexOf(t);
+  if (idx === -1) selectedSlots.push(t);
+  else selectedSlots.splice(idx, 1);
+  selectedSlots.sort();
+  renderTimeSlots();
+  updateSummary();
+}
+
+/* ══════════════════════════════════════════════
+   SUMMARY
+══════════════════════════════════════════════ */
+function updateSummary() {
+  if (!selectedSpace) return;
+  const sumSpace   = document.getElementById('sum-space');
+  const sumDate    = document.getElementById('sum-date');
+  const sumTimeRow = document.getElementById('sum-time-row');
+  const sumTime    = document.getElementById('sum-time');
+  const sumTotal   = document.getElementById('sum-total');
+  const isMonthly  = selectedSpace.priceUnit === 'mes';
+  const hasSlots   = selectedSlots.length > 0;
+  const hasDate    = !!selectedDay;
+
+  if (sumSpace) sumSpace.textContent = selectedSpace.name;
+  if (sumDate) {
+    if (hasDate) {
+      const parts = selectedDay.split('-');
+      sumDate.textContent = `${parseInt(parts[2])} de ${MONTHS_ES[parseInt(parts[1])-1]} ${parts[0]}`;
+    } else {
+      sumDate.textContent = '—';
+    }
+  }
+  if (sumTimeRow && sumTime) {
+    if (hasSlots) {
+      sumTimeRow.style.display = '';
+      sumTime.textContent = selectedSlots.join(', ') + ' hs';
+    } else {
+      sumTimeRow.style.display = 'none';
+    }
+  }
+  if (sumTotal) {
+    if (isMonthly) sumTotal.textContent = `$${selectedSpace.price.toLocaleString()} / mes`;
+    else if (hasSlots) {
+      const total = selectedSpace.price * selectedSlots.length;
+      sumTotal.textContent = `$${total.toLocaleString()} (${selectedSlots.length}h × $${selectedSpace.price.toLocaleString()})`;
+    } else if (hasDate) {
+      sumTotal.textContent = `$${selectedSpace.price.toLocaleString()} / ${selectedSpace.priceUnit}`;
+    }
+  }
+}
+
+/* ══════════════════════════════════════════════
+   SUBMIT RESERVA — CONECTADO A FLASK
+══════════════════════════════════════════════ */
+async function submitReserva() {
+  const { valid, role, username } = getSession();
+  const alertEl = document.getElementById('rform-alert');
+
+  if (!valid) {
+    document.getElementById('auth-guard').style.display = 'flex';
+    return;
+  }
+
+  const nombre   = document.getElementById('rf-nombre')?.value.trim();
+  const apellido = document.getElementById('rf-apellido')?.value.trim();
+  const email    = document.getElementById('rf-email')?.value.trim();
+
+  if (!nombre || !apellido || !email) {
+    alertEl.textContent = 'Completá nombre, apellido y email para continuar.';
+    alertEl.className = 'rform-alert show err'; return;
+  }
+  if (!/^[\w.+-]+@[\w-]+\.[a-zA-Z]{2,}$/.test(email)) {
+    alertEl.textContent = 'El email ingresado no es válido.';
+    alertEl.className = 'rform-alert show err'; return;
+  }
+  if (!selectedSpace) return;
+
+  const isMonthly = selectedSpace.priceUnit === 'mes';
+  let dateStr = selectedDay;
+  if (isMonthly) {
+    const fi = document.getElementById('rf-fecha-inicio')?.value;
+    if (!fi) { alertEl.textContent = 'Seleccioná la fecha de inicio.'; alertEl.className = 'rform-alert show err'; return; }
+    dateStr = fi;
+  }
+  if (!isMonthly && !dateStr) {
+    alertEl.textContent = 'Seleccioná una fecha disponible en el calendario.';
+    alertEl.className = 'rform-alert show err'; return;
+  }
+  if (!isMonthly && selectedSpace.timeSlots.length > 0 && selectedSlots.length === 0) {
+    alertEl.textContent = 'Seleccioná al menos un horario disponible.';
+    alertEl.className = 'rform-alert show err'; return;
+  }
+
+  // Desactivar botón y avisar que está cargando
+  const btn = document.querySelector('.btn-reserve');
+  btn.disabled = true;
+  btn.textContent = 'Procesando en la nube... ☁️';
+
+  // Formateamos los horarios (Ej: "08:00, 09:00" o "Mensual")
+  const timeToSend = isMonthly ? "Mensual" : selectedSlots.join(', ');
+
+  try {
+    // 🚀 ENVIAMOS A FLASK
+    // Recopilamos informacion adicional del formulario del cliente
+    const additionalInfo = {
+      nombre:    (document.getElementById('rf-nombre')?.value || '').trim(),
+      apellido:  (document.getElementById('rf-apellido')?.value || '').trim(),
+      email:     (document.getElementById('rf-email')?.value || '').trim(),
+      telefono:  (document.getElementById('rf-tel')?.value || '').trim(),
+      notas:     (document.getElementById('rf-notas')?.value || '').trim()
+    };
+
+    const response = await fetch('http://127.0.0.1:5000/api/bookings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: username,
+        space_name: selectedSpace.name,
+        booking_date: dateStr,
+        booking_time: timeToSend,
+        additional_info: additionalInfo
+      })
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      alertEl.innerHTML = `
+        ✅ <strong>¡Solicitud enviada!</strong><br>
+        Tu reserva está <strong>pendiente de aprobación</strong>. El administrador la confirmará a la brevedad.<br>
+        <a href="mis-reservas.html" style="color:var(--red);font-weight:600;text-decoration:none;">Ver mis reservas →</a>
+      `;
+      alertEl.className = 'rform-alert show ok';
+      btn.textContent = '✓ Solicitud enviada';
+      btn.style.background = '#2C7A5C';
+
+      // Limpiamos el formulario
+      ['rf-nombre','rf-apellido','rf-email','rf-tel','rf-notas'].forEach(id => {
+        const el = document.getElementById(id); if (el) el.value = '';
+      });
+      selectedSlots = [];
+      selectedDay   = null;
+
+      // Recargamos las reservas desde la base de datos para actualizar el calendario
+      await loadBookingsFromAPI();
+
+    } else {
+      alertEl.textContent = 'Error del servidor: ' + result.message;
+      alertEl.className = 'rform-alert show err';
+      btn.disabled = false;
+      btn.textContent = 'Enviar solicitud →';
+    }
+  } catch (error) {
+    console.error("Error crítico:", error);
+    alertEl.textContent = 'No se pudo conectar al servidor. ¿Está api.py corriendo?';
+    alertEl.className = 'rform-alert show err';
+    btn.disabled = false;
+    btn.textContent = 'Enviar solicitud →';
+  }
+}
+
+/* ══════════════════════════════════════════════
+   FILTER
+══════════════════════════════════════════════ */
+function filterSpaces(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (selectedSpace) {
+    const visible = SPACES.filter(sp => {
+      if (filter === 'all')   return true;
+      if (filter === 'avail') return getSpaceStatusToday(sp) === 'avail';
+      return sp.type === filter;
+    }).map(s => s.id);
+    if (!visible.includes(selectedSpace.id)) {
+      selectedSpace = null;
+      document.getElementById('detail-panel').classList.remove('show');
+    }
+  }
+  renderCards(filter);
+}
+
+/* ══════════════════════════════════════════════
+   NAVBAR según sesión
+══════════════════════════════════════════════ */
+function initNavbar() {
+  const { valid, role, username } = getSession();
+  const actions = document.querySelector('.nav-actions');
+  if (!actions) return;
+  if (!valid) {
+    actions.innerHTML = `
+      <a href="login.html" class="btn-nav-ghost">Iniciar sesión</a>
+      <a href="login.html#signup" class="btn-nav-red">Registrarse →</a>`;
+  } else if (role === 'admin') {
+    actions.innerHTML = `
+      <span style="font-size:13px;color:var(--txt2);font-weight:500;">👤 ${username}</span>
+      <a href="dashboard.html" class="btn-nav-red" style="margin-right:4px;">⚙️ Admin</a>
+      <button onclick="doLogout()" class="btn-nav-ghost" style="cursor:pointer;">Salir</button>`;
+  } else {
+    actions.innerHTML = `
+      <span style="font-size:13px;color:var(--txt2);font-weight:500;">👤 ${username}</span>
+      <a href="mis-reservas.html" class="btn-nav-ghost">Mis reservas</a>
+      <button onclick="doLogout()" class="btn-nav-ghost" style="cursor:pointer;">Salir</button>`;
+  }
+}
+
+function doLogout() {
+  localStorage.removeItem('nexo_token');
+  localStorage.removeItem('nexo_user');
+  window.location.href = 'login.html';
+}
+
+/* ══════════════════════════════════════════════
+   NAVBAR SCROLL & INIT
+══════════════════════════════════════════════ */
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 30);
+});
+
+// Cerrar auth guard modal
+document.getElementById('auth-guard').addEventListener('click', function(e) {
+  if (e.target === this) this.style.display = 'none';
+});
+
+// Función para ir a buscar las reservas
+async function loadBookingsFromAPI() {
+  try {
+    const response = await fetch('http://127.0.0.1:5000/api/bookings');
+    const result = await response.json();
+    if (result.success) {
+      // Adaptamos la data para que el calendario la entienda
+      DB_RESERVAS = result.data.map(r => ({
+        spaceId: SPACES.find(s => s.name === r.space_name)?.id || '',
+        date: r.booking_date,
+        slots: r.booking_time === 'Mensual' ? [] : r.booking_time.split(', '),
+        status: ['confirmada', 'confirmed', 'activa'].includes((r.status || '').toLowerCase()) ? 'confirmed' : (r.status || 'pending').toLowerCase()
+      }));
+      renderCards(currentFilter); // Recarga visual de las tarjetas
+      renderCalendar();           // Recarga visual del calendario
+    }
+  } catch (e) {
+    console.error("Error al cargar reservas de la BD", e);
+  }
+}
+
+// Inicializamos la página en este orden
+initNavbar();
+loadBookingsFromAPI(); // ← MAGIA
+
+</script><!-- ══ TÉRMINOS DEL SERVICIO MODAL (solo lectura) ══ -->
+<div class="tmodal-bg" id="spaces-tc-modal" onclick="if(event.target===this)closeSpacesTcModal()">
+  <div class="tmodal-box">
+    <div class="tmodal-head">
+      <div class="tmodal-eyebinitNavbar();row">Nexo Coworking · SpicyTech</div>
+      <div class="tmodal-title">Términos del Servicio de Reservas</div>
+    </div>
+    <div class="tmodal-body">
+      <div class="tc-section">
+        <div class="tc-section-title">3. Protocolo de Reservas</div>
+        <div class="tc-clause"><div class="tc-clause-num">3.1 Naturaleza de la Solicitud</div><div class="tc-clause-text">La realización de una solicitud a través de la plataforma <strong>no garantiza el derecho de uso</strong>. Toda petición ingresa al sistema con el estado "PENDIENTE".</div></div>
+        <div class="tc-clause"><div class="tc-clause-num">3.2 Confirmación Obligatoria</div><div class="tc-clause-text">El derecho de uso solo se perfecciona cuando un Administrador de SpicyTech modifica el estado de la solicitud a "CONFIRMADA". El usuario <strong>no debe presentarse en las instalaciones</strong> sin contar con dicha confirmación expresa.</div></div>
+        <div class="tc-clause"><div class="tc-clause-num">3.3 Resolución de Concurrencia</div><div class="tc-clause-text">Ante solicitudes simultáneas para el mismo espacio y horario, SpicyTech seleccionará según criterios de disponibilidad y prioridad interna. El rechazo no genera derecho a reclamo, indemnización o compensación alguna.</div></div>
+      </div>
+      <div class="tc-section">
+        <div class="tc-section-title">4. Cancelaciones y Ausencias</div>
+        <div class="tc-clause"><div class="tc-clause-num">4.1 Cancelación Anticipada sin Costo</div><div class="tc-clause-text">El usuario podrá cancelar su reserva confirmada sin costo alguno siempre que lo realice con una antelación mínima de <strong>24 horas</strong> respecto al inicio del turno.</div></div>
+        <div class="tc-clause"><div class="tc-clause-num">4.2 Cancelación Tardía y No-Show</div><div class="tc-clause-text">Las cancelaciones con menos de 24 horas de antelación y la inasistencia conllevarán el cobro del <strong>100% del valor total</strong> de la reserva. SpicyTech no realizará devoluciones, reembolsos ni créditos compensatorios, independientemente del motivo.</div></div>
+      </div>
+      <div class="tc-section">
+        <div class="tc-section-title">2. Horarios y Penalizaciones</div>
+        <div class="tc-clause"><div class="tc-clause-num">2.1 Franja Horaria Laboral</div><div class="tc-clause-text">El horario de funcionamiento es de <strong>lunes a viernes, de 08:00 a 20:00 horas</strong>. El ingreso fuera de estos horarios está prohibido.</div></div>
+        <div class="tc-clause"><div class="tc-clause-num">2.2 Penalización por Exceso de Tiempo</div><div class="tc-clause-text">El período de tolerancia máximo es de <strong>15 minutos</strong>. Superado dicho margen, se generará un cargo por una (1) hora adicional con una penalización del <strong>200%</strong> sobre la tarifa vigente.</div></div>
+      </div>
+      <div class="tc-section">
+        <div class="tc-section-title">5. Conducta y Responsabilidad</div>
+        <div class="tc-clause"><div class="tc-clause-num">5.3 Indemnidad por Daños</div><div class="tc-clause-text">El usuario es el único responsable económico por daños al mobiliario o infraestructura de Nexo Coworking. Deberá abonar el costo total de reparación o reposición en un plazo máximo de <strong>5 días hábiles</strong> tras la notificación.</div></div>
+      </div>
+    </div>
+    <div class="tmodal-foot">
+      <button class="tmodal-btn-close" onclick="closeSpacesTcModal()">Entendido →</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,8 @@
+{
+  "name": "nexo-coworking-dumper",
+  "version": "1.0.0",
+  "description": "Script para generar contexto de IA",
+  "scripts": {
+    "dump": "node dump.js"
+  }
+}

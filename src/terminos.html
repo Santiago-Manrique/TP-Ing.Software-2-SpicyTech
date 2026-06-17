@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Términos y Condiciones · Nexo Coworking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red:#C0392B;--red-deep:#96281B;--red-pale:#FEF0EE;--red-muted:#D4614F;
+      --dark:#1C1209;--txt:#2C1A10;--txt2:#5C4033;--txt3:#8C6B55;
+      --cream:#FAF6F1;--cream-dark:#F0E8DF;--cream-mid:#DDD0C4;--white:#FFFFFF;
+      --green:#2E7D52;--green-pale:#F0FBF4;
+      --r:16px;--rm:10px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--txt);min-height:100vh;}
+
+    /* NAV */
+    nav{position:sticky;top:0;z-index:100;background:rgba(250,246,241,0.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--cream-mid);display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:64px;}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+    .nav-logo-mark{width:36px;height:36px;background:var(--red);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+    .nav-logo-text{font-family:'Playfair Display',serif;font-size:17px;font-weight:900;color:var(--dark);}
+    .nav-logo-sub{font-size:10px;color:var(--txt3);letter-spacing:.06em;}
+    .btn-back-nav{padding:7px 16px;border:1.5px solid var(--cream-mid);border-radius:var(--rm);font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;color:var(--txt2);text-decoration:none;background:transparent;cursor:pointer;transition:all .18s;}
+    .btn-back-nav:hover{border-color:var(--red);color:var(--red);}
+
+    /* PAGE */
+    .page{max-width:760px;margin:0 auto;padding:56px 5% 100px;}
+
+    /* HEADER */
+    .tc-header{margin-bottom:48px;padding-bottom:32px;border-bottom:2px solid var(--cream-mid);}
+    .tc-eyebrow{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--red);display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+    .tc-eyebrow::before{content:'';display:inline-block;width:20px;height:2px;background:var(--red);}
+    .tc-title{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,52px);font-weight:900;color:var(--dark);line-height:1.05;margin-bottom:14px;}
+    .tc-title em{font-style:italic;color:var(--red-muted);}
+    .tc-meta{font-size:13px;color:var(--txt3);line-height:1.6;}
+    .tc-intro{margin-top:20px;padding:16px 20px;background:var(--cream-dark);border-left:3px solid var(--red);border-radius:0 10px 10px 0;font-size:13.5px;color:var(--txt2);line-height:1.7;}
+
+    /* TOC */
+    .toc{background:var(--white);border:1.5px solid var(--cream-mid);border-radius:var(--r);padding:24px 28px;margin-bottom:40px;}
+    .toc-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--txt3);margin-bottom:14px;}
+    .toc-list{list-style:none;display:flex;flex-direction:column;gap:6px;}
+    .toc-list a{font-size:13.5px;color:var(--txt2);text-decoration:none;font-weight:500;display:flex;align-items:center;gap:8px;transition:color .15s;}
+    .toc-list a:hover{color:var(--red);}
+    .toc-num{font-size:11px;font-weight:700;color:var(--red);min-width:20px;}
+
+    /* SECTIONS */
+    .tc-section{margin-bottom:44px;scroll-margin-top:80px;}
+    .tc-section-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:12px;border-bottom:1.5px solid var(--cream-mid);}
+    .tc-section-num{width:32px;height:32px;background:var(--red);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;}
+    .tc-section-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:800;color:var(--dark);}
+    .tc-clause{margin-bottom:18px;padding:16px 18px;background:var(--white);border:1.5px solid var(--cream-mid);border-radius:var(--rm);transition:border-color .2s;}
+    .tc-clause:hover{border-color:var(--red-muted);}
+    .tc-clause-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+    .tc-clause-num{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--red);background:var(--red-pale);padding:3px 8px;border-radius:4px;}
+    .tc-clause-name{font-size:13px;font-weight:700;color:var(--dark);}
+    .tc-clause-text{font-size:13.5px;color:var(--txt2);line-height:1.75;}
+    .tc-highlight{display:inline;background:var(--red-pale);color:var(--red);font-weight:600;padding:1px 5px;border-radius:4px;}
+
+    /* SPECIAL CALLOUTS */
+    .callout{display:flex;gap:12px;padding:14px 16px;border-radius:10px;margin-top:10px;font-size:13px;line-height:1.6;}
+    .callout-warn{background:#FFFBEB;border:1px solid #FDE68A;color:#854D0E;}
+    .callout-info{background:var(--green-pale);border:1px solid #BBF7D0;color:var(--green);}
+    .callout-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+
+    /* FOOTER */
+    .tc-footer{margin-top:56px;padding:28px;background:var(--dark);border-radius:var(--r);text-align:center;color:rgba(250,246,241,.7);font-size:13px;line-height:1.8;}
+    .tc-footer strong{color:var(--cream);}
+    .tc-footer a{color:var(--red-muted);text-decoration:none;}
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="home.html" class="nav-logo">
+    <div class="nav-logo-mark">🌶️</div>
+    <div><div class="nav-logo-text">SpicyTech</div><div class="nav-logo-sub">Coworking Space</div></div>
+  </a>
+  <a href="javascript:history.back()" class="btn-back-nav">← Volver</a>
+</nav>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="tc-header">
+    <div class="tc-eyebrow">Nexo Coworking · SpicyTech</div>
+    <h1 class="tc-title">Términos y <em>Condiciones</em><br>de Uso</h1>
+    <div class="tc-meta">Versión vigente · Última actualización: Mayo 2026 · Aplicable a todos los usuarios registrados en la plataforma de Nexo Coworking.</div>
+    <div class="tc-intro">
+      Al registrarse en el sistema, realizar una solicitud de reserva o ingresar a las dependencias de Nexo Coworking, el usuario declara haber leído, comprendido y aceptado en su totalidad las cláusulas aquí expuestas. Estas constituyen un <strong>contrato vinculante</strong> entre el usuario y SpicyTech.
+    </div>
+  </div>
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <div class="toc-title">Índice de contenidos</div>
+    <ul class="toc-list">
+      <li><a href="#s1"><span class="toc-num">1.</span> Régimen de Acceso y Gestión de Usuarios</a></li>
+      <li><a href="#s2"><span class="toc-num">2.</span> Horarios Operativos y Penalizaciones</a></li>
+      <li><a href="#s3"><span class="toc-num">3.</span> Protocolo de Reservas y Concurrencia</a></li>
+      <li><a href="#s4"><span class="toc-num">4.</span> Políticas de Cancelación y Ausencias</a></li>
+      <li><a href="#s5"><span class="toc-num">5.</span> Conducta, Convivencia y Responsabilidad</a></li>
+      <li><a href="#s6"><span class="toc-num">6.</span> Privacidad, Seguridad y Compliance</a></li>
+      <li><a href="#s7"><span class="toc-num">7.</span> Derecho de Admisión y Rescisión</a></li>
+    </ul>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="tc-section" id="s1">
+    <div class="tc-section-header">
+      <div class="tc-section-num">1</div>
+      <div class="tc-section-title">Régimen de Acceso y Gestión de Usuarios</div>
+    </div>
+    <div class="tc-clause">
+      <div class="tc-clause-head"><span class="tc-clause-num">1.1</span><span class="tc-clause-name">Obligatoriedad de Registro</span></div>
+      <div class="tc-clause-text">No se reconoce ni se permite el acceso bajo la figura de "Invitado" o usuario anónimo. Todo individuo que desee utilizar los servicios o instalaciones debe completar el <strong>proceso de registro oficial</strong> en la plataforma digital, proporcionando datos veraces y actualizados.</div>
+    </div>
+    <div class="tc-clause">
+      <div class="tc-clause-head"><span class="tc-clause-num">1.2</span><span class="tc-clause-name">Carácter Personal e Intransferible</span></div>
+      <div class="tc-clause-text">Tanto la cuenta de usuario como las reservas confirmadas son estrictamente personales. Queda <strong>terminantemente prohibida</strong> la cesión, préstamo o transferencia de credenciales de acceso o de derechos de uso del espacio a terceros. Cualquier detección de uso indebido resultará en la baja inmediata de la cuenta.</div>
+    </div>
+    <div class="tc-clause">
+      <div class="tc-clause-head"><span class="tc-clause-num">1.3</span><span class="tc-clause-name">Autoridad Administrativa</span></div>
+      <div class="tc-clause-text">El sistema opera bajo la supervisión de <span class="tc-highlight">cinco (5) cuentas Administradoras predefinidas</span>, pertenecientes a los socios fundadores de SpicyTech. Dichos administradores poseen la autoridad final e inapelable para gestionar la ocupación, resolver conflictos de disponibilidad y ejercer el control operativo del espacio.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="tc-section" id="s2">
+    <div class="tc-section-header">
+      <div class="tc-section-num">2</div>
+      <div class="tc-section-title">Horarios Operativos y Penalizaciones</div>
+    </div>
+    <div class="tc-clause">
+      <div class="tc-clause-head"><span class="tc-clause-num">2.1</span><span class="tc-clause-name">Franja Horaria Laboral</span></div>
+      <div class="tc-clause-text">El horario de funcionamiento de las instalaciones de Nexo Coworking es de <span class="tc-highlight">lunes a viernes, de 08:00 a 20:00 horas</span>. El ingreso fuera de estos horarios está estrictamente prohibido y los sistemas de acceso automatizados permanecerán inactivos.</div>
+    </div>
+    <div class="tc-clause">
+      <div class="tc-clause-head"><span class="tc-clause-num">2.2</span><span class="tc-clause-name">Penalización por Exceso de Tiempo</span></div>
+      <div class="tc-clause-text">El Miembro se obliga a desocupar el espacio asignado exactamente al término de su reserva. Se establece un período de tolerancia máximo de <span class="tc-highlight">15 minutos</span>. Superado dicho margen, el sistema generará automáticamente un cargo por una (1) hora adicional de uso, aplicada con una penalización del <span class="tc-highlight">200% sobre la tarifa vigente</span>.</div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div>La penalización del 200% se aplica automáticamente. No se aceptarán excepciones por causas de fuerza mayor no documentadas previamente.</div></div>
+    </div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="tc-section" id="s3">
+    <div class="tc-section-header">
+      <div class="tc-section-num">3</div>
+      <div class="tc-section-title">Protocolo de Reservas y Gestión de Concurrencia</div>
+    </div>
+    <div class="tc-clause">
+      <div class="tc-clause-head"><span class="tc-clause-num">3.1</span><span class="tc-clause-name">Naturaleza de la Solicitud</span></div>
+      <div class="tc-clause-text">La realización de una solicitud a través de la plataforma <strong>no garantiza el derecho de uso</strong>. Toda petición ingresa al sistema con el estado de <span class="tc-highlight">PENDIENTE</span>.</div>
+    </div>
+    <div class="tc-clause">
+      <div class="tc-clause-head"><span class="tc-clause-num">3.2</span><span class="tc-clause-name">Confirmación Obligatoria</span></div>
+      <div class="tc-clause-text">El derecho de uso y goce del espacio solo se perfecciona cuando un Administrador de SpicyTech modifica el estado de la solicitud a <span class="tc-highlight">CONFIRMADA</span>. El usuario <strong>no debe presentarse en las instalaciones</strong> sin contar con dicha confirmación expresa.</div>
+      <div class="callout callout-info"><div class="callout-icon">ℹ️</div><div>Podés consultar el estado de tus reservas en tiempo real desde la sección "Mis Reservas" dentro de tu cuenta.</div></div>
+    </div>
+    <div class="tc-clause">
+      <div class="tc-clause-head"><span class="tc-clause-num">3.3</span><span class="tc-clause-name">Resolución de Concurrencia</span></div>
+      <div class="tc-clause-text">En caso de existir solicitudes múltiples y simultáneas para un mismo espacio y franja horaria, SpicyTech, a través de sus administradores, seleccionará la solicitud a confirmar según criterios de disponibilidad y prioridad interna. La confirmación de una solicitud implica el rechazo automático de las demás peticiones concurrentes, <strong>sin que ello genere derecho a reclamo, indemnización o compensación alguna</strong>.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="tc-section" id="s4">
+    <div class="tc-section-header">
+      <div class="tc-section-num">4</div>
+      <div class="tc-section-title">Políticas de Cancelación y Ausencias (No-Show)</div>
+    </div>
+    <div class="tc-clause">
+      <div class="tc-clause-head"><span class="tc-clause-num">4.1</span><span class="tc-clause-name">Cancelación Anticipada</span></div>
+      <div class="tc-clause-text">El usuario podrá cancelar su reserva confirmada <strong>sin costo alguno</strong> siempre que realice la notificación a través de la plataforma con una antelación mínima de <span class="tc-highlight">24 horas</span> respecto al inicio del turno.</div>
+      <div class="callout callout-info"><div class="callout-icon">✅</div><div>Podés cancelar tu reserva directamente desde "Mis Reservas" en la plataforma, hasta 24 horas antes del inicio.</div></div>
+    </div>
+    <div class="tc-clause">
+      <div class="tc-clause-head"><span class="tc-clause-num">4.2</span><span class="tc-clause-name">Cancelación Tardía y No-Show</span></div>
+      <div class="tc-clause-text">Las cancelaciones realizadas con <strong>menos de 24 horas de antelación</strong>, así como la inasistencia a una reserva confirmada (no-show), conllevarán el cobro del <span class="tc-highlight">100% del valor total de la reserva</span>. SpicyTech no realizará devoluciones, reembolsos ni otorgará créditos compensatorios ante estas situaciones, independientemente del motivo de la ausencia.</div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div>En caso de no-show, el importe total será facturado sin excepciones. Asegurate de cancelar con tiempo suficiente si no podés asistir.</div></div>
+    </div>
+  </div>
+
+  <!-- SECTION 5 -->
+  <div class="tc-section" id="s5">
+    <div class="tc-section-header">
+      <div class="tc-section-num">5</div>
+      <div class="tc-section-title">Normas de Conducta, Convivencia y Responsabilidad</div>
+    </div>
+    <div class="tc-clause">
+      <div class="tc-clause-head"><span class="tc-clause-num">5.1</span><span class="tc-clause-name">Ambiente de Productividad</span></div>
+      <div class="tc-clause-text">Queda prohibido generar ruidos molestos en las áreas comunes o de "Open Space". El uso de teléfonos móviles o la participación en videoconferencias dentro de estas áreas requiere obligatoriamente el <strong>uso de auriculares</strong>.</div>
+    </div>
+    <div class="tc-clause">
+      <div class="tc-clause-head"><span class="tc-clause-num">5.2</span><span class="tc-clause-name">Uso de Conectividad</span></div>
+      <div class="tc-clause-text">El servicio de Wi-Fi se provee exclusivamente para <strong>fines profesionales</strong>. Está estrictamente prohibido utilizar la red para actividades ilícitas, incluyendo pero no limitado a: descargas de contenido protegido por derechos de autor, piratería informática, minería de activos digitales no autorizada o acceso a contenido ilegal.</div>
+    </div>
+    <div class="tc-clause">
+      <div class="tc-clause-head"><span class="tc-clause-num">5.3</span><span class="tc-clause-name">Indemnidad por Daños</span></div>
+      <div class="tc-clause-text">El usuario es el <strong>único responsable económico</strong> por cualquier daño, rotura o mal funcionamiento ocasionado al mobiliario, infraestructura o hardware de Nexo Coworking. En caso de siniestro, el usuario se compromete a abonar el costo total de reparación o reposición en un plazo máximo e improrrogable de <span class="tc-highlight">5 días hábiles</span> tras la notificación del daño.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 6 -->
+  <div class="tc-section" id="s6">
+    <div class="tc-section-header">
+      <div class="tc-section-num">6</div>
+      <div class="tc-section-title">Privacidad, Seguridad y Compliance Técnico</div>
+    </div>
+    <div class="tc-clause">
+      <div class="tc-clause-head"><span class="tc-clause-num">6.1</span><span class="tc-clause-name">Exención de Responsabilidad por Bienes Personales</span></div>
+      <div class="tc-clause-text">SpicyTech <strong>no asume responsabilidad alguna</strong> por el robo, pérdida, extravío o daño de cualquier bien personal, equipo electrónico o dinero en efectivo que el usuario introduzca en las instalaciones. El cuidado de los mismos recae exclusivamente sobre el usuario.</div>
+    </div>
+    <div class="tc-clause">
+      <div class="tc-clause-head"><span class="tc-clause-num">6.2</span><span class="tc-clause-name">Sistemas de Vigilancia</span></div>
+      <div class="tc-clause-text">Por razones de seguridad y control de activos, el usuario presta su <strong>consentimiento expreso</strong> para ser grabado por el sistema de videovigilancia (CCTV) las 24 horas del día en todas las áreas comunes de las instalaciones.</div>
+    </div>
+    <div class="tc-clause">
+      <div class="tc-clause-head"><span class="tc-clause-num">6.3</span><span class="tc-clause-name">Tratamiento de Datos Personales</span></div>
+      <div class="tc-clause-text">La plataforma digital cumple con los estándares de la norma <span class="tc-highlight">ISO/IEC 27001</span>. Las contraseñas de los usuarios son almacenadas mediante algoritmos de encriptación de alta seguridad (Bcrypt) y la gestión de sesiones se realiza mediante el estándar <span class="tc-highlight">JWT (JSON Web Token)</span>, garantizando la integridad y confidencialidad de la información.</div>
+      <div class="callout callout-info"><div class="callout-icon">🔒</div><div>Tus datos están protegidos. Nunca compartimos información personal con terceros sin tu consentimiento expreso.</div></div>
+    </div>
+  </div>
+
+  <!-- SECTION 7 -->
+  <div class="tc-section" id="s7">
+    <div class="tc-section-header">
+      <div class="tc-section-num">7</div>
+      <div class="tc-section-title">Derecho de Admisión y Rescisión Unilateral</div>
+    </div>
+    <div class="tc-clause">
+      <div class="tc-clause-head"><span class="tc-clause-num">7.1</span><span class="tc-clause-name">Facultad de Permanencia</span></div>
+      <div class="tc-clause-text">SpicyTech se reserva el derecho de admisión y permanencia. Los administradores podrán solicitar el retiro inmediato de cualquier usuario que altere el orden, la paz o el flujo de trabajo del espacio.</div>
+    </div>
+    <div class="tc-clause">
+      <div class="tc-clause-head"><span class="tc-clause-num">7.2</span><span class="tc-clause-name">Baja de Cuenta por Incumplimiento</span></div>
+      <div class="tc-clause-text">El incumplimiento de cualquiera de las cláusulas establecidas en este documento facultará a SpicyTech a proceder con la <strong>rescisión unilateral e inmediata</strong> del servicio, inhabilitando la cuenta del usuario y anulando cualquier reserva futura sin derecho a reembolso o compensación.</div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div>El incumplimiento reiterado puede resultar en la baja permanente de la cuenta y el impedimento de futuras registraciones.</div></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="tc-footer">
+    <strong>Nexo Coworking · SpicyTech</strong><br>
+    Estos términos son aplicables a todos los usuarios de la plataforma a partir de su registro.<br>
+    Ante cualquier duda, contactanos en <a href="mailto:info@spicytech.com">info@spicytech.com</a>
+  </div>
+
+</div>
+</body>
+</html>

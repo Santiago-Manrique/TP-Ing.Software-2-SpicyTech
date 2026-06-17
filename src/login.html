@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpicyTech · Acceso</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:        #C0392B;
+      --red-deep:   #96281B;
+      --red-soft:   #E8604C;
+      --red-muted:  #D4614F;
+      --cream:      #FAF6F0;
+      --cream-dark: #F0E8DC;
+      --cream-mid:  #E8DDD0;
+      --sand:       #C9B99A;
+      --dark:       #1C1209;
+      --txt:        #2C1A10;
+      --txt2:       #7A5C44;
+      --txt3:       #A08870;
+      --white:      #FFFFFF;
+      --r:          16px;
+      --rm:         12px;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Outfit', sans-serif;
+      background: var(--cream);
+      color: var(--txt);
+    }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--cream-dark); }
+    ::-webkit-scrollbar-thumb { background: var(--red-muted); border-radius: 3px; }
+
+    .auth-root {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 100vh;
+    }
+
+    /* ══ LEFT PANEL ══ */
+    .left-panel {
+      background: var(--dark);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 48px 52px;
+      animation: panelIn 0.7s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes panelIn {
+      from { opacity: 0; transform: translateX(-32px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .left-panel::before {
+      content: '';
+      position: absolute;
+      top: -160px; right: -160px;
+      width: 560px; height: 560px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(192,57,43,0.16) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .left-panel::after {
+      content: '';
+      position: absolute;
+      bottom: -120px; left: -80px;
+      width: 420px; height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,185,154,0.07) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .lp-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 52px 52px;
+      pointer-events: none;
+    }
+    .lp-dots {
+      position: absolute;
+      top: 50%; right: 36px;
+      transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 9px;
+      z-index: 1;
+    }
+    .lp-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.13); }
+    .lp-dot.on { background: var(--red-soft); }
+
+    .lp-top, .lp-mid, .lp-bot { position: relative; z-index: 1; width: 100%; }
+    .lp-mid { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+
+    .logo-link { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; }
+    .logo-mark {
+      width: 42px; height: 42px; background: var(--red);
+      border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      font-size: 20px; box-shadow: 0 6px 18px rgba(192,57,43,0.38); flex-shrink: 0;
+    }
+    .logo-name { font-family: 'Playfair Display', serif; font-size: 21px; font-weight: 700; color: var(--cream); }
+    .logo-sub  { font-size: 10px; color: var(--sand); opacity: 0.55; letter-spacing: 0.08em; margin-top: 1px; }
+
+    /* Carousel */
+    .carousel { margin-bottom: 36px; }
+    .c-slides  { position: relative; min-height: 230px; }
+    .c-slide   {
+      position: absolute; inset: 0;
+      opacity: 0; transform: translateY(14px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      pointer-events: none;
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+    }
+    .c-slide.active {
+      opacity: 1; transform: translateY(0);
+      pointer-events: auto; position: relative;
+    }
+    .slide-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(30px, 3vw, 46px);
+      font-weight: 900; color: var(--cream);
+      line-height: 1.08; margin-bottom: 14px;
+      text-align: center;
+    }
+    .slide-title em { font-style: italic; color: var(--red-soft); }
+    .slide-desc {
+      font-size: 14px; color: var(--sand);
+      line-height: 1.7; font-weight: 300;
+      max-width: 320px; margin-bottom: 26px;
+      text-align: center;
+    }
+    .slide-pills { display: flex; flex-direction: column; gap: 9px; align-items: center; width: 100%; }
+    .slide-pill  {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 50px; padding: 8px 15px; width: fit-content;
+    }
+    .pill-icon {
+      width: 26px; height: 26px; background: rgba(192,57,43,0.2);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 13px; flex-shrink: 0;
+    }
+    .pill-text { font-size: 12.5px; color: var(--cream); opacity: 0.85; }
+
+    .c-nav { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 22px; }
+    .c-dot-btn {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      cursor: pointer; border: none; padding: 0;
+      transition: all 0.22s;
+    }
+    .c-dot-btn.active { background: var(--red-soft); width: 22px; border-radius: 4px; }
+    .c-arrow {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.6); font-size: 14px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, color 0.2s;
+    }
+    .c-arrow:hover { background: rgba(255,255,255,0.14); color: #fff; }
+    .c-arrow-right { margin-left: 0; }
+
+    .lp-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px; padding: 16px 20px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .lp-card-avatar {
+      width: 38px; height: 38px;
+      background: linear-gradient(135deg, var(--red), var(--red-soft));
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 17px; flex-shrink: 0;
+    }
+    .lp-card-quote { font-size: 12.5px; color: var(--sand); line-height: 1.5; font-style: italic; font-weight: 300; }
+    .lp-card-author { font-size: 10.5px; color: var(--txt3); margin-top: 3px; font-style: normal; }
+
+    /* ══ RIGHT PANEL ══ */
+    .right-panel {
+      background: var(--cream);
+      display: flex; flex-direction: column;
+      overflow-y: auto;
+      animation: formIn 0.65s cubic-bezier(.22,1,.36,1) both;
+      animation-delay: 0.1s;
+    }
+    @keyframes formIn {
+      from { opacity: 0; transform: translateX(24px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .right-inner {
+      flex: 1; display: flex; flex-direction: column;
+      justify-content: center;
+      padding: 44px 9% 44px 8%;
+      max-width: 500px; width: 100%; margin: 0 auto;
+    }
+
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; color: var(--txt3);
+      text-decoration: none; margin-bottom: 36px;
+      transition: color 0.18s;
+    }
+    .back-link:hover { color: var(--red); }
+    .back-link:hover .b-arr { transform: translateX(-3px); }
+    .b-arr { transition: transform 0.18s; display: inline-block; }
+
+    /* ── TABS ── */
+    .tab-bar {
+      display: flex;
+      background: var(--cream-dark);
+      border-radius: var(--rm); padding: 4px;
+      margin-bottom: 30px;
+      border: 1px solid var(--cream-mid);
+    }
+    .tab-btn {
+      flex: 1; padding: 10px 8px;
+      border: none; background: transparent;
+      border-radius: 9px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 13.5px; font-weight: 500;
+      color: var(--txt3); cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: var(--white); color: var(--txt);
+      box-shadow: 0 2px 8px rgba(44,26,16,0.08);
+    }
+
+    /* ── FORM PANELS — THE FIX ── */
+    .form-panel        { display: none; }
+    .form-panel.active { display: block; }
+    .success-screen        { display: none; flex-direction: column; align-items: center; text-align: center; padding: 16px 0; }
+    .success-screen.show   { display: flex; }
+
+    .form-eyebrow {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 8px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .form-eyebrow::before { content: ''; display: inline-block; width: 16px; height: 2px; background: var(--red); }
+    .form-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(24px, 2.8vw, 32px); font-weight: 800;
+      color: var(--dark); line-height: 1.15; margin-bottom: 7px;
+    }
+    .form-title em { font-style: italic; color: var(--red-muted); }
+    .form-sub { font-size: 13.5px; color: var(--txt2); font-weight: 300; line-height: 1.6; margin-bottom: 22px; }
+
+    .alert { padding: 11px 15px; border-radius: var(--rm); font-size: 13px; line-height: 1.5; margin-bottom: 14px; display: none; }
+    .alert.show { display: block; }
+    .alert.err  { background: #FEE9E7; color: var(--red-deep); border: 1px solid rgba(192,57,43,0.15); }
+    .alert.ok   { background: #F0FBF4; color: #166534; border: 1px solid rgba(22,101,52,0.15); }
+
+    .field { margin-bottom: 14px; }
+    .field-label { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--txt2); margin-bottom: 6px; }
+    .field-wrap  { position: relative; }
+    .field-input {
+      width: 100%; height: 44px; padding: 0 13px 0 40px;
+      border: 1.5px solid var(--cream-mid); border-radius: var(--rm);
+      background: var(--white);
+      font-family: 'Outfit', sans-serif; font-size: 14px; color: var(--txt);
+      outline: none; transition: border-color 0.18s, box-shadow 0.18s;
+    }
+    .field-input:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(192,57,43,0.07); }
+    .field-input.error { border-color: var(--red); }
+    .field-input::placeholder { color: var(--sand); }
+    .field-icon {
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+      width: 15px; height: 15px; color: var(--txt3); pointer-events: none;
+    }
+    .field-error { font-size: 11.5px; color: var(--red); margin-top: 4px; display: none; }
+    .field-error.show { display: block; }
+
+    .role-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 14px; }
+    .role-card {
+      padding: 11px 6px; border: 1.5px solid var(--cream-mid);
+      border-radius: var(--rm); cursor: pointer; text-align: center;
+      background: var(--white); transition: all 0.16s;
+    }
+    .role-card:hover { border-color: var(--red-muted); background: #FEF9F5; }
+    .role-card.selected { border-color: var(--red); background: #FEF0EE; }
+    .role-card input { display: none; }
+    .role-icon { font-size: 18px; display: block; margin-bottom: 4px; }
+    .role-name { font-size: 11.5px; font-weight: 600; color: var(--dark); }
+    .role-desc { font-size: 9.5px; color: var(--txt3); margin-top: 1px; }
+
+    .pw-strength { margin-top: 7px; display: none; }
+    .pw-strength.show { display: block; }
+    .pw-bars { display: flex; gap: 4px; margin-bottom: 4px; }
+    .pw-bar  { flex: 1; height: 3px; border-radius: 2px; background: var(--cream-mid); transition: background 0.2s; }
+    .pw-bar.weak   { background: var(--red); }
+    .pw-bar.fair   { background: #D4854A; }
+    .pw-bar.strong { background: #5C9E6E; }
+    .pw-label { font-size: 11px; color: var(--txt3); }
+    .pw-rules { display: flex; flex-direction: column; gap: 3px; margin-top: 7px; }
+    .rule { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--txt3); transition: color 0.15s; }
+    .rule.ok { color: #3A7D55; }
+    .rule-dot { width: 4px; height: 4px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+
+    .btn-submit {
+      width: 100%; height: 46px; border: none; border-radius: var(--rm);
+      background: var(--red); color: #fff;
+      font-family: 'Outfit', sans-serif; font-size: 14.5px; font-weight: 600;
+      cursor: pointer; margin-top: 4px;
+      transition: background 0.18s, transform 0.1s, box-shadow 0.18s;
+      box-shadow: 0 5px 18px rgba(192,57,43,0.24);
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+    }
+    .btn-submit:hover { background: var(--red-deep); transform: translateY(-1px); box-shadow: 0 9px 26px rgba(192,57,43,0.3); }
+    .btn-submit:active { transform: scale(0.99); }
+    .btn-submit:disabled { opacity: 0.7; pointer-events: none; }
+
+    .divider { display: flex; align-items: center; gap: 10px; margin: 16px 0; font-size: 12px; color: var(--txt3); }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--cream-mid); }
+
+    .success-icon { width: 68px; height: 68px; background: #F0FBF4; border-radius: 50%; border: 2px solid rgba(22,101,52,0.15); display: flex; align-items: center; justify-content: center; font-size: 30px; margin-bottom: 18px; }
+    .success-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 800; color: var(--dark); margin-bottom: 8px; }
+    .success-msg { font-size: 13.5px; color: var(--txt2); line-height: 1.6; max-width: 280px; margin-bottom: 16px; font-weight: 300; }
+    .success-badge { background: var(--white); border: 1px solid var(--cream-mid); border-radius: var(--rm); padding: 10px 18px; font-size: 13px; color: var(--txt2); margin-bottom: 22px; }
+    .success-badge strong { color: var(--dark); }
+    .btn-back { padding: 9px 26px; border: 1.5px solid var(--cream-mid); border-radius: var(--rm); background: transparent; font-family: 'Outfit', sans-serif; font-size: 13px; color: var(--txt2); cursor: pointer; transition: all 0.18s; }
+    .btn-back:hover { border-color: var(--red); color: var(--red); }
+
+    @media (max-width: 860px) {
+      .auth-root { grid-template-columns: 1fr; }
+      .left-panel { padding: 32px 28px; min-height: auto; }
+      .lp-dots, .lp-card { display: none; }
+      .right-inner { padding: 36px 7%; max-width: 100%; }
+    }
+    @media (max-width: 460px) { .role-grid { grid-template-columns: 1fr 1fr; } }
+
+    /* ── TERMS MODAL ── */
+    .tmodal-bg{position:fixed;inset:0;background:rgba(28,18,9,.6);z-index:9999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);padding:16px;}
+    .tmodal-bg.show{display:flex;}
+    .tmodal-box{background:var(--white);border-radius:20px;max-width:560px;width:100%;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 32px 80px rgba(28,18,9,.3);animation:tmIn .22s ease;}
+    @keyframes tmIn{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+    .tmodal-head{padding:24px 28px 16px;border-bottom:1px solid var(--cream-mid);flex-shrink:0;}
+    .tmodal-eyebrow{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:6px;}
+    .tmodal-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:var(--dark);}
+    .tmodal-body{overflow-y:auto;padding:20px 28px;flex:1;}
+    .tmodal-body::-webkit-scrollbar{width:4px;}
+    .tmodal-body::-webkit-scrollbar-thumb{background:var(--cream-mid);border-radius:4px;}
+    .tc-section{margin-bottom:20px;}
+    .tc-section-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--red);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--cream-mid);}
+    .tc-clause{margin-bottom:10px;}
+    .tc-clause-num{font-size:11px;font-weight:700;color:var(--dark);margin-bottom:3px;}
+    .tc-clause-text{font-size:12.5px;color:var(--txt2);line-height:1.65;}
+    .tmodal-foot{padding:16px 28px;border-top:1px solid var(--cream-mid);flex-shrink:0;display:flex;flex-direction:column;gap:12px;}
+    .tc-check-row{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--txt2);cursor:pointer;}
+    .tc-check-row input[type=checkbox]{width:16px;height:16px;flex-shrink:0;accent-color:var(--red);margin-top:2px;cursor:pointer;}
+    .tmodal-actions{display:flex;gap:10px;}
+    .tmodal-btn-accept{flex:1;padding:11px;background:var(--red);border:none;border-radius:var(--rm);font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;color:#fff;cursor:pointer;transition:background .18s,opacity .18s;opacity:.5;pointer-events:none;}
+    .tmodal-btn-accept.enabled{opacity:1;pointer-events:auto;}
+    .tmodal-btn-accept.enabled:hover{background:var(--red-deep);}
+    .tmodal-btn-back{padding:11px 20px;border:1.5px solid var(--cream-mid);border-radius:var(--rm);background:transparent;font-family:'Outfit',sans-serif;font-size:13px;color:var(--txt2);cursor:pointer;transition:all .18s;}
+    .tmodal-btn-back:hover{border-color:var(--red);color:var(--red);}
+    .tc-scroll-hint{font-size:11px;color:var(--txt3);text-align:center;}
+  </style>
+</head>
+<body>
+<div class="auth-root">
+
+  <!-- ══ LEFT ══ -->
+  <div class="left-panel">
+    <div class="lp-grid"></div>
+    <div class="lp-dots">
+      <div class="lp-dot"></div><div class="lp-dot on"></div>
+      <div class="lp-dot"></div><div class="lp-dot"></div><div class="lp-dot"></div>
+    </div>
+
+    <div class="lp-top">
+      <a href="home.html" class="logo-link">
+        <div class="logo-mark">🌶️</div>
+        <div><div class="logo-name">SpicyTech</div><div class="logo-sub">Coworking Space</div></div>
+      </a>
+    </div>
+
+    <div class="lp-mid">
+      <div class="carousel">
+        <div class="c-slides" id="c-slides">
+          <div class="c-slide active">
+            <h2 class="slide-title">Tu espacio,<br><em>tu ritmo,</em><br>tu comunidad.</h2>
+            <p class="slide-desc">Accedé a escritorios, salas y oficinas privadas. Todo para trabajar en serio.</p>
+            <div class="slide-pills">
+              <div class="slide-pill"><div class="pill-icon">📡</div><span class="pill-text">WiFi 500 Mbps incluido</span></div>
+              <div class="slide-pill"><div class="pill-icon">🔒</div><span class="pill-text">Acceso seguro 24/7</span></div>
+              <div class="slide-pill"><div class="pill-icon">☕</div><span class="pill-text">Cafetería ilimitada</span></div>
+            </div>
+          </div>
+          <div class="c-slide">
+            <h2 class="slide-title">Reservá en<br><em>segundos,</em><br>trabajá ya.</h2>
+            <p class="slide-desc">Sistema en tiempo real. Sin conflictos de doble reserva, sin llamadas, sin papeles.</p>
+            <div class="slide-pills">
+              <div class="slide-pill"><div class="pill-icon">📅</div><span class="pill-text">Reservas en tiempo real</span></div>
+              <div class="slide-pill"><div class="pill-icon">📊</div><span class="pill-text">Historial de uso</span></div>
+              <div class="slide-pill"><div class="pill-icon">🔔</div><span class="pill-text">Notificaciones automáticas</span></div>
+            </div>
+          </div>
+          <div class="c-slide">
+            <h2 class="slide-title">Crecé con<br>tu empresa,<br><em>crecé aquí.</em></h2>
+            <p class="slide-desc">Desde freelancers hasta equipos. Oficinas privadas y todo el soporte necesario.</p>
+            <div class="slide-pills">
+              <div class="slide-pill"><div class="pill-icon">💺</div><span class="pill-text">Mobiliario ergonómico</span></div>
+              <div class="slide-pill"><div class="pill-icon">🖨️</div><span class="pill-text">Impresión y escaneo</span></div>
+              <div class="slide-pill"><div class="pill-icon">🤝</div><span class="pill-text">Comunidad activa</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="c-nav">
+          <button class="c-dot-btn active" onclick="goSlide(0)"></button>
+          <button class="c-dot-btn"        onclick="goSlide(1)"></button>
+          <button class="c-dot-btn"        onclick="goSlide(2)"></button>
+          <button class="c-arrow"          onclick="prevSlide()">‹</button>
+          <button class="c-arrow c-arrow-right" onclick="nextSlide()">›</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="lp-bot">
+      <div class="lp-card">
+        <div class="lp-card-avatar">🙌</div>
+        <div>
+          <div class="lp-card-quote">"El mejor espacio para trabajar que encontré en la ciudad."</div>
+          <div class="lp-card-author">— Miembro SpicyTech desde 2025</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ RIGHT ══ -->
+  <div class="right-panel">
+    <div class="right-inner">
+
+      <a href="home.html" class="back-link"><span class="b-arr">←</span> Volver al inicio</a>
+
+      <div class="tab-bar">
+        <button class="tab-btn active" id="tab-login"  onclick="switchTab('login')">Iniciar sesión</button>
+        <button class="tab-btn"        id="tab-signup" onclick="switchTab('signup')">Crear cuenta</button>
+      </div>
+
+      <!-- LOGIN -->
+      <div class="form-panel active" id="panel-login">
+        <div class="form-eyebrow">Acceso</div>
+        <h1 class="form-title">Bienvenido <em>de vuelta</em></h1>
+        <p class="form-sub">Ingresá tus credenciales para acceder al sistema de reservas.</p>
+        <div class="alert" id="login-alert"></div>
+        <div class="field">
+          <label class="field-label">Nombre de usuario</label>
+          <div class="field-wrap">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            <input class="field-input" type="text" id="login-username" placeholder="tu_usuario" autocomplete="username">
+          </div>
+          <span class="field-error" id="err-lu"></span>
+        </div>
+        <div class="field">
+          <label class="field-label">Contraseña</label>
+          <div class="field-wrap">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            <input class="field-input" type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" style="padding-right:44px;">
+            <button type="button" onclick="togglePw('login-password','eye-lp')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--txt3);font-size:16px;" id="eye-lp">👁</button>
+          </div>
+          <span class="field-error" id="err-lp"></span>
+        </div>
+        <button class="btn-submit" id="btn-login" onclick="doLogin()">Iniciar sesión →</button>
+        <div class="divider">o</div>
+        <p style="text-align:center;font-size:13px;color:var(--txt2);">¿No tenés cuenta? <a href="#" onclick="switchTab('signup');return false;" style="color:var(--red);text-decoration:none;font-weight:600;">Registrate gratis</a></p>
+      </div>
+
+      <!-- SIGNUP -->
+      <div class="form-panel" id="panel-signup">
+        <div class="form-eyebrow">Registro</div>
+        <h1 class="form-title">Creá tu <em>cuenta</em></h1>
+        <p class="form-sub">Elegí tu tipo de acceso y completá tus datos.</p>
+        <div class="alert" id="signup-alert"></div>
+        <input type="hidden" name="role" value="member" id="role-hidden">
+        <div class="field">
+          <label class="field-label">Nombre de usuario</label>
+          <div class="field-wrap">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            <input class="field-input" type="text" id="su-username" placeholder="mi_usuario" oninput="valU()" autocomplete="username">
+          </div>
+          <span class="field-error" id="err-su"></span>
+        </div>
+        <div class="field">
+          <label class="field-label">Correo electrónico</label>
+          <div class="field-wrap">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+            <input class="field-input" type="email" id="su-email" placeholder="vos@ejemplo.com" oninput="valE()" autocomplete="email">
+          </div>
+          <span class="field-error" id="err-se"></span>
+        </div>
+        <div class="field">
+          <label class="field-label">Contraseña</label>
+          <div class="field-wrap">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            <input class="field-input" type="password" id="su-password" placeholder="••••••••" oninput="valP()" autocomplete="new-password" style="padding-right:44px;">
+            <button type="button" onclick="togglePw('su-password','eye-sp')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--txt3);font-size:16px;" id="eye-sp">👁</button>
+          </div>
+          <div class="pw-strength" id="pw-str">
+            <div class="pw-bars"><div class="pw-bar" id="b1"></div><div class="pw-bar" id="b2"></div><div class="pw-bar" id="b3"></div><div class="pw-bar" id="b4"></div></div>
+            <span class="pw-label" id="pw-lbl">—</span>
+          </div>
+          <div class="pw-rules">
+            <div class="rule" id="r-len"><span class="rule-dot"></span>Mínimo 8 caracteres</div>
+            <div class="rule" id="r-up"><span class="rule-dot"></span>Una mayúscula</div>
+            <div class="rule" id="r-lo"><span class="rule-dot"></span>Una minúscula</div>
+            <div class="rule" id="r-nu"><span class="rule-dot"></span>Un número</div>
+            <div class="rule" id="r-sp"><span class="rule-dot"></span>Un carácter especial</div>
+          </div>
+          <span class="field-error" id="err-sp"></span>
+        </div>
+        <div class="field">
+          <label class="field-label">Confirmar contraseña</label>
+          <div class="field-wrap">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            <input class="field-input" type="password" id="su-confirm" placeholder="••••••••" oninput="valC()" autocomplete="new-password" style="padding-right:44px;">
+            <button type="button" onclick="togglePw('su-confirm','eye-sc')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--txt3);font-size:16px;" id="eye-sc">👁</button>
+          </div>
+          <span class="field-error" id="err-sc"></span>
+        </div>
+        <!-- T&C checkbox -->
+        <div style="background:var(--cream-dark);border:1px solid var(--cream-mid);border-radius:10px;padding:12px 14px;margin-bottom:14px;">
+          <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:var(--txt2);">
+            <input type="checkbox" id="tc-check" onchange="onTcCheck()" style="width:16px;height:16px;flex-shrink:0;accent-color:var(--red);margin-top:2px;">
+            <span>Leí y acepto los <a href="terminos.html" target="_blank" onclick="openTcModal();return false;" style="color:var(--red);font-weight:600;text-decoration:none;">Términos y Condiciones</a> de Nexo Coworking. Entiendo que mis datos serán tratados conforme a la cláusula 6.</span>
+          </label>
+        </div>
+        <button class="btn-submit" id="btn-signup" onclick="doSignup()" style="opacity:.5;pointer-events:none;">Crear cuenta →</button>
+        <div class="divider">o</div>
+        <p style="text-align:center;font-size:13px;color:var(--txt2);">¿Ya tenés cuenta? <a href="#" onclick="switchTab('login');return false;" style="color:var(--red);text-decoration:none;font-weight:600;">Iniciá sesión</a></p>
+      </div>
+
+      <!-- SUCCESS -->
+      <div class="success-screen" id="success-screen">
+        <div class="success-icon">✓</div>
+        <h2 class="success-title" id="s-title">¡Listo!</h2>
+        <p class="success-msg" id="s-msg"></p>
+        <div class="success-badge" id="s-badge"></div>
+        <button class="btn-back" onclick="backToForm()">Volver al acceso</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ TÉRMINOS Y CONDICIONES MODAL ══ -->
+<div class="tmodal-bg" id="tc-modal" onclick="if(event.target===this)closeTcModal()">
+  <div class="tmodal-box">
+    <div class="tmodal-head">
+      <div class="tmodal-eyebrow">Nexo Coworking · SpicyTech</div>
+      <div class="tmodal-title">Términos y Condiciones de Uso</div>
+    </div>
+    <div class="tmodal-body">
+      <div class="tc-section">
+        <div class="tc-section-title">Aceptación</div>
+        <div class="tc-clause"><div class="tc-clause-text">Al registrarse, el usuario declara haber leído, comprendido y aceptado en su totalidad las cláusulas aquí expuestas, las cuales constituyen un contrato vinculante entre el usuario y SpicyTech.</div></div>
+      </div>
+      <div class="tc-section">
+        <div class="tc-section-title">1. Régimen de Acceso y Usuarios</div>
+        <div class="tc-clause"><div class="tc-clause-num">1.1 Obligatoriedad de Registro</div><div class="tc-clause-text">No se permite el acceso bajo la figura de "Invitado" o usuario anónimo. Todo individuo debe completar el proceso de registro oficial proporcionando datos veraces y actualizados.</div></div>
+        <div class="tc-clause"><div class="tc-clause-num">1.2 Carácter Personal e Intransferible</div><div class="tc-clause-text">La cuenta y las reservas confirmadas son estrictamente personales. Queda prohibida la cesión, préstamo o transferencia de credenciales o derechos de uso a terceros. Cualquier uso indebido resultará en la baja inmediata de la cuenta.</div></div>
+        <div class="tc-clause"><div class="tc-clause-num">1.3 Autoridad Administrativa</div><div class="tc-clause-text">El sistema opera bajo la supervisión de cinco (5) cuentas Administradoras predefinidas, pertenecientes a los socios fundadores de SpicyTech, quienes poseen autoridad final para gestionar la ocupación y resolver conflictos.</div></div>
+      </div>
+      <div class="tc-section">
+        <div class="tc-section-title">2. Horarios y Penalizaciones</div>
+        <div class="tc-clause"><div class="tc-clause-num">2.1 Franja Horaria Laboral</div><div class="tc-clause-text">El horario de funcionamiento es de lunes a viernes, de 08:00 a 20:00 horas. El ingreso fuera de estos horarios está prohibido.</div></div>
+        <div class="tc-clause"><div class="tc-clause-num">2.2 Penalización por Exceso de Tiempo</div><div class="tc-clause-text">Se establece un período de tolerancia máximo de 15 minutos. Superado dicho margen, se generará un cargo por una (1) hora adicional con una penalización del 200% sobre la tarifa vigente.</div></div>
+      </div>
+      <div class="tc-section">
+        <div class="tc-section-title">3. Protocolo de Reservas</div>
+        <div class="tc-clause"><div class="tc-clause-num">3.1 Naturaleza de la Solicitud</div><div class="tc-clause-text">La realización de una solicitud no garantiza el derecho de uso. Toda petición ingresa con el estado "PENDIENTE".</div></div>
+        <div class="tc-clause"><div class="tc-clause-num">3.2 Confirmación Obligatoria</div><div class="tc-clause-text">El derecho de uso solo se perfecciona cuando un Administrador modifica el estado a "CONFIRMADA". No debe presentarse en las instalaciones sin dicha confirmación.</div></div>
+        <div class="tc-clause"><div class="tc-clause-num">3.3 Resolución de Concurrencia</div><div class="tc-clause-text">Ante solicitudes simultáneas para el mismo espacio y horario, SpicyTech seleccionará según criterios internos. El rechazo no genera derecho a reclamo ni compensación.</div></div>
+      </div>
+      <div class="tc-section">
+        <div class="tc-section-title">4. Cancelaciones y Ausencias</div>
+        <div class="tc-clause"><div class="tc-clause-num">4.1 Cancelación Anticipada</div><div class="tc-clause-text">El usuario podrá cancelar sin costo siempre que lo realice con una antelación mínima de <strong>24 horas</strong> respecto al inicio del turno.</div></div>
+        <div class="tc-clause"><div class="tc-clause-num">4.2 Cancelación Tardía y No-Show</div><div class="tc-clause-text">Las cancelaciones con menos de 24 horas de antelación y la inasistencia conllevarán el cobro del <strong>100% del valor total</strong> de la reserva, sin devoluciones ni compensaciones.</div></div>
+      </div>
+      <div class="tc-section">
+        <div class="tc-section-title">5. Conducta y Responsabilidad</div>
+        <div class="tc-clause"><div class="tc-clause-num">5.1 Ambiente de Productividad</div><div class="tc-clause-text">Queda prohibido generar ruidos molestos en áreas comunes. El uso de telefonía o videoconferencias en estas áreas requiere auriculares.</div></div>
+        <div class="tc-clause"><div class="tc-clause-num">5.2 Uso de Conectividad</div><div class="tc-clause-text">El Wi-Fi se provee exclusivamente para fines profesionales. Está prohibido usarlo para actividades ilícitas, descargas ilegales, piratería o minería de activos digitales.</div></div>
+        <div class="tc-clause"><div class="tc-clause-num">5.3 Indemnidad por Daños</div><div class="tc-clause-text">El usuario es el único responsable económico por daños al mobiliario o infraestructura. Deberá abonar el costo total de reparación en un plazo máximo de 5 días hábiles.</div></div>
+      </div>
+      <div class="tc-section">
+        <div class="tc-section-title">6. Privacidad y Seguridad</div>
+        <div class="tc-clause"><div class="tc-clause-num">6.1 Bienes Personales</div><div class="tc-clause-text">SpicyTech no asume responsabilidad por el robo, pérdida o daño de bienes personales o equipos electrónicos dentro de las instalaciones.</div></div>
+        <div class="tc-clause"><div class="tc-clause-num">6.2 Videovigilancia</div><div class="tc-clause-text">El usuario presta su consentimiento expreso para ser grabado por el sistema de CCTV las 24 horas en todas las áreas comunes.</div></div>
+        <div class="tc-clause"><div class="tc-clause-num">6.3 Datos Personales</div><div class="tc-clause-text">La plataforma cumple con estándares ISO/IEC 27001. Las contraseñas se almacenan mediante Bcrypt y las sesiones se gestionan con estándar JWT.</div></div>
+      </div>
+      <div class="tc-section">
+        <div class="tc-section-title">7. Derecho de Admisión y Rescisión</div>
+        <div class="tc-clause"><div class="tc-clause-num">7.1 Facultad de Permanencia</div><div class="tc-clause-text">SpicyTech se reserva el derecho de admisión y permanencia. Los administradores podrán solicitar el retiro inmediato de usuarios que alteren el orden.</div></div>
+        <div class="tc-clause"><div class="tc-clause-num">7.2 Baja por Incumplimiento</div><div class="tc-clause-text">El incumplimiento de cualquier cláusula facultará a SpicyTech a rescindir unilateralmente el servicio, inhabilitando la cuenta y anulando reservas futuras sin reembolso.</div></div>
+      </div>
+    </div>
+    <div class="tmodal-foot">
+      <div class="tc-scroll-hint">📜 Desplazate para leer todos los términos antes de aceptar</div>
+      <label class="tc-check-row" for="tc-modal-check">
+        <input type="checkbox" id="tc-modal-check" onchange="onModalCheck(this)">
+        <span>He leído y acepto en su totalidad los Términos y Condiciones de Nexo Coworking.</span>
+      </label>
+      <div class="tmodal-actions">
+        <button class="tmodal-btn-back" onclick="closeTcModal()">← Volver</button>
+        <button class="tmodal-btn-accept" id="tmodal-accept-btn" onclick="acceptTerms()">Aceptar y continuar →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════
+   CUENTAS ADMIN PREDEFINIDAS (locales)
+══════════════════════════════════════════════ */
+const ADMIN_ACCOUNTS = [
+  { username: 'JesusDO',   password: '200326',   email: 'jesus@spicytech.com'    },
+  { username: 'MatiasP',   password: '1234',     email: 'matias@spicytech.com'   },
+  { username: 'SantinoC',  password: 'sexo12',   email: 'santino@spicytech.com'  },
+  { username: 'OctavioG',  password: 'shagy217', email: 'octavio@spicytech.com'  },
+  { username: 'SantiagoM', password: 'admin123', email: 'santiago@spicytech.com' },
+];
+
+/* ══════════════════════════════════════════════
+   STORAGE HELPERS
+══════════════════════════════════════════════ */
+function getUsers() {
+  try { return JSON.parse(localStorage.getItem('nexo_users') || '[]'); } catch { return []; }
+}
+function saveUsers(u) { localStorage.setItem('nexo_users', JSON.stringify(u)); }
+
+function initAdmins() {
+  let users = getUsers();
+  let changed = false;
+  ADMIN_ACCOUNTS.forEach(a => {
+    if (!users.find(u => u.username === a.username)) {
+      users.push({ username: a.username, email: a.email, password: a.password, role: 'admin', created: new Date().toLocaleDateString('es-AR'), active: true });
+      changed = true;
+    }
+  });
+  if (changed) saveUsers(users);
+}
+initAdmins();
+
+function makeToken(username, role) {
+  // Usamos encodeURIComponent para soportar cualquier caracter en username
+  const toB64 = obj => btoa(unescape(encodeURIComponent(JSON.stringify(obj)))).replace(/=/g,'');
+  const header  = toB64({ alg: 'HS256', typ: 'JWT' });
+  const payload = toB64({ sub: username, role, exp: Math.floor(Date.now()/1000) + 86400 * 7 });
+  const sig     = btoa(unescape(encodeURIComponent(username + role + Date.now()))).replace(/=/g,'');
+  return `${header}.${payload}.${sig}`;
+}
+
+/* ── CAROUSEL ── */
+let cur = 0, total = 3, timer;
+function goSlide(n) {
+  document.querySelectorAll('.c-slide').forEach((s,i) => s.classList.toggle('active', i===n));
+  document.querySelectorAll('.c-dot-btn').forEach((d,i) => d.classList.toggle('active', i===n));
+  cur = n;
+}
+function nextSlide() { goSlide((cur+1)%total); resetTimer(); }
+function prevSlide() { goSlide((cur-1+total)%total); resetTimer(); }
+function resetTimer() { clearInterval(timer); timer = setInterval(nextSlide, 5000); }
+timer = setInterval(nextSlide, 5000);
+
+/* ── TABS ── */
+function switchTab(tab) {
+  document.getElementById('tab-login').classList.toggle('active',   tab==='login');
+  document.getElementById('tab-signup').classList.toggle('active',  tab==='signup');
+  document.getElementById('panel-login').classList.toggle('active', tab==='login');
+  document.getElementById('panel-signup').classList.toggle('active',tab==='signup');
+  document.getElementById('success-screen').classList.remove('show');
+  clearAlerts();
+}
+window.addEventListener('DOMContentLoaded', () => {
+  if (location.hash === '#signup') switchTab('signup');
+});
+
+/* ── HELPERS ── */
+function clearAlerts() {
+  ['login-alert','signup-alert'].forEach(id => { const e=document.getElementById(id); if(e){e.className='alert';e.textContent='';} });
+}
+function showAlert(id, msg, type) {
+  const e=document.getElementById(id); if(!e) return;
+  e.textContent=msg; e.className=`alert show ${type}`;
+}
+function setErr(iId, eId, msg) {
+  const i=document.getElementById(iId), e=document.getElementById(eId); if(!i||!e) return;
+  if(msg){ i.classList.add('error'); e.textContent=msg; e.classList.add('show'); }
+  else   { i.classList.remove('error'); e.textContent=''; e.classList.remove('show'); }
+}
+
+/* ── TÉRMINOS Y CONDICIONES MODAL ── */
+function openTcModal() {
+  document.getElementById('tc-modal').classList.add('show');
+  document.getElementById('tc-modal-check').checked = false;
+  document.getElementById('tmodal-accept-btn').classList.remove('enabled');
+}
+function closeTcModal() {
+  document.getElementById('tc-modal').classList.remove('show');
+}
+function onModalCheck(cb) {
+  document.getElementById('tmodal-accept-btn').classList.toggle('enabled', cb.checked);
+}
+function acceptTerms() {
+  // Marcar el checkbox externo como aceptado
+  document.getElementById('tc-check').checked = true;
+  onTcCheck();
+  closeTcModal();
+}
+function onTcCheck() {
+  const checked = document.getElementById('tc-check').checked;
+  const btn = document.getElementById('btn-signup');
+  btn.style.opacity    = checked ? '1' : '0.5';
+  btn.style.pointerEvents = checked ? 'auto' : 'none';
+}
+
+/* ── SHOW/HIDE PASSWORD ── */
+function togglePw(inputId, btnId) {
+  const inp = document.getElementById(inputId);
+  const btn = document.getElementById(btnId);
+  if (!inp) return;
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+  else                         { inp.type = 'password'; btn.textContent = '👁'; }
+}
+
+/* ── VALIDATIONS ── */
+function valU() {
+  const v=document.getElementById('su-username').value.trim();
+  if(v&&v.length<3)              setErr('su-username','err-su','Mínimo 3 caracteres');
+  else if(v&&!/^[a-zA-Z0-9_]+$/.test(v)) setErr('su-username','err-su','Solo letras, números y _');
+  else setErr('su-username','err-su','');
+}
+function valE() {
+  const v=document.getElementById('su-email').value.trim();
+  if(v&&!/^[\w.+-]+@[\w-]+\.[a-zA-Z]{2,}$/.test(v)) setErr('su-email','err-se','Email inválido');
+  else setErr('su-email','err-se','');
+}
+function valC() {
+  const p=document.getElementById('su-password').value, c=document.getElementById('su-confirm').value;
+  if(c&&p!==c) setErr('su-confirm','err-sc','Las contraseñas no coinciden');
+  else setErr('su-confirm','err-sc','');
+}
+function valP() {
+  const pw=document.getElementById('su-password').value;
+  document.getElementById('pw-str').classList.toggle('show', pw.length>0);
+  const ch={'r-len':pw.length>=8,'r-up':/[A-Z]/.test(pw),'r-lo':/[a-z]/.test(pw),'r-nu':/\d/.test(pw),'r-sp':/[!@#$%^&*(),.?":{}|<>]/.test(pw)};
+  Object.entries(ch).forEach(([id,ok])=>document.getElementById(id)?.classList.toggle('ok',ok));
+  const score=Object.values(ch).filter(Boolean).length;
+  const bars=['b1','b2','b3','b4'].map(id=>document.getElementById(id));
+  const lbl=document.getElementById('pw-lbl');
+  bars.forEach(b=>b&&(b.className='pw-bar'));
+  const cfg=[null,{f:'weak',l:'Débil',c:'var(--red)',n:1},{f:'fair',l:'Regular',c:'#D4854A',n:2},{f:'fair',l:'Regular',c:'#D4854A',n:2},{f:'strong',l:'Buena',c:'#5C9E6E',n:3},{f:'strong',l:'Excelente',c:'#3A7D55',n:4}][score]||{f:'weak',l:'Débil',c:'var(--red)',n:1};
+  for(let i=0;i<cfg.n;i++) bars[i]?.classList.add(cfg.f);
+  lbl.textContent=cfg.l; lbl.style.color=cfg.c;
+  if(document.getElementById('su-confirm').value) valC();
+}
+
+/* ── LOGIN (CONECTADO A LA NUBE ☁️) ── */
+async function doLogin() {
+  const btn = document.getElementById('btn-login');
+  const u = document.getElementById('login-username').value.trim();
+  const p = document.getElementById('login-password').value;
+  
+  if(!u){ setErr('login-username','err-lu','Ingresá tu usuario'); return; }
+  if(!p){ setErr('login-password','err-lp','Ingresá tu contraseña'); return; }
+  
+  btn.disabled = true; btn.textContent = 'Conectando al servidor... ☁️';
+
+  try {
+    const response = await fetch('http://127.0.0.1:5000/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: u, password: p })
+    });
+    
+    const result = await response.json();
+
+    if (result.success) {
+      // Guardamos el token y los datos reales que nos manda la base de datos
+      const userData = result.data;
+      localStorage.setItem('nexo_token', userData.token);
+      localStorage.setItem('nexo_user', JSON.stringify({ 
+        username: userData.username, 
+        email: userData.email, 
+        role: userData.role 
+      }));
+
+      const dest = userData.role === 'admin' ? 'dashboard.html' : 'home.html';
+      const roleLabel = userData.role === 'admin' ? 'Panel de administración' : 'Inicio';
+      showSuccess('¡Bienvenido de vuelta!', `Redirigiendo a ${roleLabel}…`, `Conectado como <strong>${userData.username}</strong> · ${userData.role}`);
+      setTimeout(() => { window.location.href = dest; }, 1500);
+    } else {
+      // Error de credenciales (incorrectas, bloqueadas, etc)
+      showAlert('login-alert', result.message || 'Credenciales incorrectas.', 'err');
+      btn.disabled = false; btn.innerHTML = 'Iniciar sesión →';
+    }
+  } catch (error) {
+    console.error("Error de conexión:", error);
+    showAlert('login-alert', 'No se pudo conectar con el servidor. ¿api.py está corriendo?', 'err');
+    btn.disabled = false; btn.innerHTML = 'Iniciar sesión →';
+  }
+}
+
+
+/* ── SIGNUP (CONECTADO A LA NUBE ☁️) ── */
+async function doSignup() {
+  const btn = document.getElementById('btn-signup');
+  const u = document.getElementById('su-username').value.trim();
+  const m = document.getElementById('su-email').value.trim().toLowerCase();
+  const p = document.getElementById('su-password').value;
+  const c = document.getElementById('su-confirm').value;
+
+  // Validaciones visuales (se mantienen igual)
+  if (!u || u.length < 3 || !/^[a-zA-Z0-9_]+$/.test(u)) {
+    showAlert('signup-alert','Nombre de usuario inválido (mín. 3 caracteres, solo letras, números y _).','err');
+    return;
+  }
+  if (!/^[\w.+-]+@[\w-]+\.[a-zA-Z]{2,}$/.test(m)) {
+    showAlert('signup-alert','Email inválido.','err');
+    return;
+  }
+  if (p !== c) {
+    showAlert('signup-alert','Las contraseñas no coinciden.','err');
+    return;
+  }
+  if (p.length < 6) {
+    showAlert('signup-alert','La contraseña debe tener al menos 6 caracteres.','err');
+    return;
+  }
+
+  btn.disabled = true; btn.textContent = 'Creando cuenta en la base de datos... ☁️';
+
+  try {
+    const response = await fetch('http://127.0.0.1:5000/api/auth/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: u, email: m, password: p, confirm_password: c })
+    });
+    
+    const result = await response.json();
+
+    if (result.success) {
+      showSuccess('¡Cuenta creada!', 'Tu usuario ya está registrado en Supabase. Redirigiendo al acceso…', `<strong>${u}</strong> · ${m} · Miembro`);
+      // Vaciamos los campos y mandamos al usuario a que inicie sesión
+      setTimeout(() => { 
+        document.getElementById('su-username').value = '';
+        document.getElementById('su-password').value = '';
+        document.getElementById('su-confirm').value = '';
+        backToForm(); 
+        switchTab('login'); 
+      }, 2500);
+      btn.disabled = false; btn.innerHTML = 'Crear cuenta →';
+    } else {
+      // Error (ej: el usuario ya existe en Supabase)
+      showAlert('signup-alert', result.message || 'Error al registrar.', 'err');
+      btn.disabled = false; btn.innerHTML = 'Crear cuenta →';
+    }
+  } catch (error) {
+    console.error("Error de conexión:", error);
+    showAlert('signup-alert', 'No se pudo conectar con el servidor.', 'err');
+    btn.disabled = false; btn.innerHTML = 'Crear cuenta →';
+  }
+}
+
+function showSuccess(title,msg,info) {
+  document.getElementById('panel-login').classList.remove('active');
+  document.getElementById('panel-signup').classList.remove('active');
+  document.querySelector('.tab-bar').style.visibility='hidden';
+  document.getElementById('s-title').textContent=title;
+  document.getElementById('s-msg').textContent=msg;
+  document.getElementById('s-badge').innerHTML=info;
+  document.getElementById('success-screen').classList.add('show');
+}
+function backToForm() {
+  document.getElementById('success-screen').classList.remove('show');
+  document.querySelector('.tab-bar').style.visibility='';
+  switchTab('login');
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Enter') return;
+  if(document.getElementById('panel-login').classList.contains('active'))  doLogin();
+  if(document.getElementById('panel-signup').classList.contains('active')) doSignup();
+});
+</script>
+</body>
+</html>

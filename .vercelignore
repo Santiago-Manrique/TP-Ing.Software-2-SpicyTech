@@ -1,0 +1,7 @@
+.venv/
+TP1_ingenieria_II-main/
+tests/
+docs/
+design/
+dump.js
+e2e_test.py
