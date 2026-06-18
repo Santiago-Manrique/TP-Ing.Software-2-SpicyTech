@@ -19,7 +19,6 @@ import json
 import os
 import io
 import base64
-import threading
 import resend
 import qrcode
 from datetime import datetime, timedelta
@@ -196,16 +195,16 @@ class EmailNotifier(AuthObserver):
             )
 
     def _send_async(self, to: str, subject: str, body: str, attach_qr: bytes = None, qr_filename: str = None):
-        """Dispara el envío en un thread en segundo plano."""
+        """Envía el email de forma síncrona, dentro del mismo request.
+
+        En un entorno serverless como Vercel, la función se congela apenas se
+        responde al cliente: un hilo en background puede no llegar a ejecutarse.
+        Por eso el envío se hace acá mismo, antes de devolver la respuesta HTTP.
+        """
         if not to:
             print("[EmailNotifier] No se envía email: destinatario vacío.")
             return
-        thread = threading.Thread(
-            target=self._send_email,
-            args=(to, subject, body, attach_qr, qr_filename),
-            daemon=True
-        )
-        thread.start()
+        self._send_email(to, subject, body, attach_qr, qr_filename)
 
     def _send_email(self, to: str, subject: str, html_body: str, attach_qr: bytes = None, qr_filename: str = None):
         """Envío real vía Resend (Email API)."""
