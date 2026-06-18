@@ -366,8 +366,14 @@ def get_spaces():
 
 @app.post("/api/spaces")
 def create_space():
-    """Crea un nuevo espacio con un ID auto-generado"""
+    """Crea un nuevo espacio delegando el ID a Supabase"""
     data = _json_payload()
+    
+    # 🛡️ ESCUDO: Si por algún error el frontend manda un ID, lo eliminamos
+    # para no chocar con el "uuid" obligatorio de Supabase.
+    if "id" in data:
+        del data["id"]
+        
     ok, err = _require_json_fields(data, "name", "type", "capacity", "price")
     if not ok:
         return jsonify({"success": False, "message": err, "errors": [err]}), 400
