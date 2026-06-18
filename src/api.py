@@ -179,20 +179,37 @@ def create_booking():
         return jsonify({"success": False, "message": str(e)}), 500
 
 # Usamos @app.route para evitar el bloqueo 405 de CORS
-@app.route("/api/bookings/<booking_id>", methods=["PATCH", "OPTIONS"])
+@app.route("/api/bookings/<booking_id>", methods=["PATCH", "DELETE", "OPTIONS"])
 def update_booking_status(booking_id):
-    """Permite al administrador aprobar o rechazar una reserva.
+    """Permite al administrador aprobar, rechazar o eliminar una reserva.
     Al confirmar: genera QR + envía email de aprobación.
-    Al rechazar: envía email de rechazo."""
-    # Responder al preflight CORS manualmente por si flask-cors no lo captura
+    Al rechazar: envía email de rechazo.
+    DELETE: elimina la reserva definitivamente (uso administrativo, por ejemplo
+    para limpiar reservas de prueba/demo)."""
     if request.method == "OPTIONS":
         from flask import make_response
         resp = make_response("", 204)
         resp.headers["Access-Control-Allow-Origin"]  = "*"
-        resp.headers["Access-Control-Allow-Methods"] = "PATCH, OPTIONS"
+        resp.headers["Access-Control-Allow-Methods"] = "PATCH, DELETE, OPTIONS"
         resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
         return resp
 
+    if request.method == "DELETE":
+        try:
+            try:
+                booking_id_typed = int(booking_id)
+            except (ValueError, TypeError):
+                booking_id_typed = booking_id
+
+            deleted = booking_repo.delete(booking_id_typed)
+            if deleted:
+                return jsonify({"success": True, "message": "Reserva eliminada correctamente"}), 200
+            return jsonify({"success": False, "message": f"No se encontró la reserva con id={booking_id}"}), 404
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            return jsonify({"success": False, "message": str(e)}), 500
+          
     try:
         new_status = _json_payload().get("status")
         if not new_status:
@@ -245,6 +262,30 @@ def update_booking_status(booking_id):
         traceback.print_exc()
         return jsonify({"success": False, "message": str(e)}), 500
 
+@app.route("/api/bookings/bulk-delete", methods=["POST", "OPTIONS"])
+def bulk_delete_bookings():
+    """Elimina múltiples reservas en lote (uso administrativo). Pensado para
+    limpiar de una sola vez grandes cantidades de reservas de prueba/demo."""
+    if request.method == "OPTIONS":
+        from flask import make_response
+        resp = make_response("", 204)
+        resp.headers["Access-Control-Allow-Origin"]  = "*"
+        resp.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
+        resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
+        return resp
+
+    data = _json_payload()
+    ids = data.get("ids") or []
+    if not ids:
+        return jsonify({"success": False, "message": "No se proporcionaron IDs para eliminar"}), 400
+
+    try:
+        count = booking_repo.delete_many(ids)
+        return jsonify({"success": True, "message": f"{count} reserva(s) eliminada(s)", "deleted": count}), 200
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"success": False, "message": str(e)}), 500
 
 @app.get("/api/bookings/<booking_id>/qr")
 def get_booking_qr(booking_id):
