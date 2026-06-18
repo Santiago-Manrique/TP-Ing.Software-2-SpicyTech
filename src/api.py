@@ -178,30 +178,6 @@ def create_booking():
         print(f"Error al crear reserva: {e}")
         return jsonify({"success": False, "message": str(e)}), 500
 
-
-# ═══════════════════════════════════════════════════════════════
-# LECTOR DE QR: BUSCAR UNA ÚNICA RESERVA
-# ═══════════════════════════════════════════════════════════════
-@app.get("/api/bookings/<booking_id>")
-def get_booking(booking_id):
-    """Devuelve los datos de una única reserva escaneada por código QR."""
-    try:
-        # Parseamos el ID igual que en las rutas de PATCH para soportar UUID/Int
-        try:
-            booking_id_typed = int(booking_id)
-        except (ValueError, TypeError):
-            booking_id_typed = booking_id
-
-        booking = booking_repo.get_by_id(booking_id_typed)
-        if not booking:
-            return jsonify({"success": False, "message": "Reserva no encontrada"}), 404
-        return jsonify({"success": True, "data": booking}), 200
-    except Exception as e:
-        import traceback
-        traceback.print_exc()
-        return jsonify({"success": False, "message": str(e)}), 500
-
-
 # Usamos @app.route para evitar el bloqueo 405 de CORS
 @app.route("/api/bookings/<booking_id>", methods=["PATCH", "DELETE", "OPTIONS"])
 def update_booking_status(booking_id):
@@ -268,13 +244,6 @@ def update_booking_status(booking_id):
                 return jsonify({
                     "success": True,
                     "message": f"Reserva rechazada. Se notificó al cliente vía email.",
-                    "data": result
-                }), 200
-
-            elif status_lower == "ingresado":
-                return jsonify({
-                    "success": True,
-                    "message": f"Ingreso físico del cliente validado con éxito.",
                     "data": result
                 }), 200
 
