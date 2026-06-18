@@ -20,13 +20,10 @@ import os
 import io
 import base64
 import threading
-import smtplib
+import resend
 import qrcode
 from datetime import datetime, timedelta
 from typing import Any
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.image import MIMEImage
 from supabase import create_client, Client
 
 # ---------- JWT Secret (cambiar en producción) ----------
@@ -70,12 +67,14 @@ class SupabaseTableRepository:
     def _generate_numeric_id() -> int:
         return int(time.time() * 1000) + int(uuid.uuid4().int % 10000)
 
-# ---------- SMTP Configuración (Gmail) ----------
-SMTP_HOST = os.environ.get("SMTP_HOST", "smtp.gmail.com")
-SMTP_PORT = int(os.environ.get("SMTP_PORT", "587"))
-SMTP_USER = os.environ.get("SMTP_USER", "")
-SMTP_PASS = os.environ.get("SMTP_PASS", os.environ.get("GMAIL_APP_PASSWORD", ""))
-EMAIL_FROM = os.environ.get("EMAIL_FROM", f"SpicyTech Coworking <{CONTACT_EMAIL}>")
+# ---------- Resend Configuración (Email API) ----------
+# RESEND_API_KEY: se obtiene en https://resend.com/api-keys (Sending access).
+# EMAIL_FROM: mientras no verifiques un dominio propio en Resend, usá el sandbox
+#             "onboarding@resend.dev". En ese modo, Resend SOLO entrega a la casilla
+#             con la que te registraste en Resend (ej. santi481manrique@gmail.com).
+RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
+EMAIL_FROM = os.environ.get("EMAIL_FROM", "SpicyTech Coworking <onboarding@resend.dev>")
+resend.api_key = RESEND_API_KEY
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -209,42 +208,31 @@ class EmailNotifier(AuthObserver):
         thread.start()
 
     def _send_email(self, to: str, subject: str, html_body: str, attach_qr: bytes = None, qr_filename: str = None):
-        """Envío real vía SMTP Gmail."""
+        """Envío real vía Resend (Email API)."""
         try:
-            if not SMTP_USER or not SMTP_PASS:
+            if not RESEND_API_KEY:
                 raise RuntimeError(
-                    "Configuración SMTP incompleta: define SMTP_USER y SMTP_PASS. "
-                    "En Gmail debés usar una App Password con 2FA habilitado."
+                    "Configuración de Resend incompleta: definí RESEND_API_KEY en las variables de entorno. "
+                    "Podés generarla en https://resend.com/api-keys"
                 )
 
-            msg = MIMEMultipart("related")
-            msg["Subject"] = subject
-            msg["From"] = EMAIL_FROM
-            msg["To"] = to
+            params: resend.Emails.SendParams = {
+                "from": EMAIL_FROM,
+                "to": [to],
+                "subject": subject,
+                "html": html_body,
+            }
 
-            # Parte HTML
-            msg_alt = MIMEMultipart("alternative")
-            msg.attach(msg_alt)
-            msg_alt.attach(MIMEText(html_body, "html", "utf-8"))
-
-            # Adjuntar QR si existe
+            # Adjuntar QR si existe (como inline image vía Content-ID)
             if attach_qr and qr_filename:
-                img = MIMEImage(attach_qr)
-                img.add_header("Content-ID", "<qr_code>")
-                img.add_header("Content-Disposition", "inline", filename=qr_filename)
-                msg.attach(img)
+                params["attachments"] = [{
+                    "filename": qr_filename,
+                    "content": base64.b64encode(attach_qr).decode("utf-8"),
+                    "content_id": "qr_code",
+                }]
 
-            with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=10) as server:
-                server.starttls()
-                server.login(SMTP_USER, SMTP_PASS)
-                server.sendmail(EMAIL_FROM, [to], msg.as_string())
-
-            print(f"[EmailNotifier] ✅ Email enviado a {to} · {subject}")
-        except smtplib.SMTPAuthenticationError as exc:
-            print(
-                f"[EmailNotifier] ❌ Credenciales SMTP rechazadas por Gmail: {exc}. "
-                "Usá un App Password de Gmail en vez de la contraseña normal."
-            )
+            email = resend.Emails.send(params)
+            print(f"[EmailNotifier] ✅ Email enviado a {to} · {subject} · id={email.get('id')}")
         except Exception as exc:
             print(f"[EmailNotifier] ❌ Error enviando email a {to}: {exc}")
 
