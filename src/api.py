@@ -286,8 +286,8 @@ def bulk_delete_bookings():
         import traceback
         traceback.print_exc()
         return jsonify({"success": False, "message": str(e)}), 500
-      @app.get("/api/bookings/validate")
-
+      
+@app.get("/api/bookings/validate")
 def validate_booking_qr():
     """Valida un token QR escaneado y devuelve los datos de la reserva."""
     booking_id = request.args.get("id")
