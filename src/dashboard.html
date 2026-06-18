@@ -1241,20 +1241,20 @@ function buildWeeklyReservations() {
 }
 
 function buildMonthlyHourCounts() {
-  const now = new Date(); const currentMonth = now.getMonth(); const currentYear = now.getFullYear();
   const labels = Array.from({ length: 11 }, (_, index) => `${String(index + 8).padStart(2, '0')}:00`);
   const counts = new Map(labels.map(label => [label, 0]));
 
   DB_RESERVAS.forEach(row => {
     if (!isActiveReservation(row)) return;
-    const date = parseDateValue(row.booking_date || row.date || row.created_at);
-    if (!date || date.getMonth() !== currentMonth || date.getFullYear() !== currentYear) return;
+    // Eliminamos el filtro de "mes actual" para que tome todas las reservas
     const hourLabel = getStartHourLabel(row.booking_time || row.time);
-    if (hourLabel && counts.has(hourLabel)) counts.set(hourLabel, counts.get(hourLabel) + 1);
+    if (hourLabel && counts.has(hourLabel)) {
+      counts.set(hourLabel, counts.get(hourLabel) + 1);
+    }
   });
+  
   return labels.map(label => ({ label, value: counts.get(label) || 0 }));
 }
-
 function buildBoxStats() {
   const ys = buildAnalyticsSamples().map(item => item.y).filter(value => Number.isFinite(value));
   if (!ys.length) return null;
