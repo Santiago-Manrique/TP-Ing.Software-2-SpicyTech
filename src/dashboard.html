@@ -360,40 +360,61 @@
       </div>
 
       <div class="view" id="view-stats">
-        <div class="stats-row">
-          <div class="stat-card"><div class="s-icon" style="background:var(--red-pale)">📅</div><div><div class="s-num" id="stat-bookings-month">0</div><div class="s-label">Reservas este mes</div></div></div>
-          <div class="stat-card"><div class="s-icon" style="background:var(--green-pale)">💰</div><div><div class="s-num">$84k</div><div class="s-label">Ingresos proyectados</div></div></div>
-          <div class="stat-card"><div class="s-icon" style="background:var(--amber-pale)">⭐</div><div><div class="s-num">4.8</div><div class="s-label">Satisfacción</div></div></div>
-          <div class="stat-card"><div class="s-icon" style="background:#EEF2FF">⏱️</div><div><div class="s-num" id="stat-avg-reservation">0.0h</div><div class="s-label">Promedio de reserva</div></div></div>
-        </div>
-      
-        <div class="g2">
-          <div class="card">
-            <div class="card-hd"><div class="card-title">Reservas: Próximos 7 días</div></div>
-            <div class="chart-shell" style="height: 250px;">
-              <canvas id="reservasBarChart"></canvas>
+          <div class="stats-row">
+            <div class="stat-card"><div class="s-icon" style="background:var(--red-pale)">📅</div><div><div class="s-num" id="stat-bookings-month">0</div><div class="s-label">Reservas este mes</div></div></div>
+            <div class="stat-card"><div class="s-icon" style="background:var(--green-pale)">💰</div><div><div class="s-num">$84k</div><div class="s-label">Ingresos proyectados</div></div></div>
+            <div class="stat-card"><div class="s-icon" style="background:var(--amber-pale)">⭐</div><div><div class="s-num">4.8</div><div class="s-label">Satisfacción</div></div></div>
+            <div class="stat-card"><div class="s-icon" style="background:#EEF2FF">⏱️</div><div><div class="s-num" id="stat-avg-reservation">0.0h</div><div class="s-label">Promedio de reserva</div></div></div>
+          </div>
+        
+          <div class="g2">
+            <div class="card">
+              <div class="card-hd"><div class="card-title">Reservas: Próximos 7 días</div></div>
+              <div class="chart-shell" style="height: 250px;">
+                <canvas id="reservasBarChart"></canvas>
+              </div>
+            </div>
+            
+            <div class="card">
+              <div class="card-hd"><div class="card-title">¿Qué dicen tus datos?</div></div>
+              <div style="display:flex; flex-direction:column; gap: 15px; font-size: 14px; color: var(--txt2);">
+                <p><strong>Promedio:</strong> El número promedio de horas que nos piden por reserva. Es tu nivel de actividad habitual.</p>
+                <p><strong>Mediana:</strong> El punto medio; la mitad de tus reservas son más cortas que este valor y la otra mitad, más largas.</p>
+                <p><strong>Moda:</strong> Es la duración de reserva que más se repite. Tu opción más popular.</p>
+              </div>
             </div>
           </div>
-          
+        
           <div class="card">
-            <div class="card-hd"><div class="card-title">¿Qué dicen tus datos?</div></div>
-            <div style="display:flex; flex-direction:column; gap: 15px; font-size: 14px; color: var(--txt2);">
-              <p><strong>Promedio:</strong> El número promedio de horas que nos piden por reserva. Es tu nivel de actividad habitual.</p>
-              <p><strong>Mediana:</strong> El punto medio. Significa que la mitad de tus reservas son más cortas que este valor, y la otra mitad son más largas.</p>
-              <p><strong>Moda:</strong> Es la duración de reserva que más se repite. Tu "best-seller" en cuanto a tiempo.</p>
+            <div class="card-hd"><div class="card-title">Medidas de Tendencia Central</div></div>
+            <div class="metric-grid">
+              <div class="metric-box">
+                <span class="metric-label">Promedio (Media)</span>
+                <span class="metric-value" id="central-mean">0.00</span>
+              </div>
+              <div class="metric-box">
+                <span class="metric-label">Punto Medio (Mediana)</span>
+                <span class="metric-value" id="central-median">0.00</span>
+              </div>
+              <div class="metric-box">
+                <span class="metric-label">Más Frecuente (Moda)</span>
+                <span class="metric-value" id="central-mode">0.00</span>
+              </div>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="card-hd"><div class="card-title">Análisis detallado</div></div>
+            <div class="quick-pack-grid" id="quick-pack-grid"></div>
+            <div class="analysis-alert ok" id="analysis-alert" style="margin-top:15px">
+              <span style="font-size:18px;line-height:1">📌</span>
+              <div style="flex:1">
+                <div style="font-size:13px;font-weight:700;color:var(--green)" id="analysis-alert-title">Esperando datos reales…</div>
+                <div style="font-size:12px;color:var(--txt3);margin-top:3px;line-height:1.45" id="analysis-alert-text">Analizando tendencias para optimizar tu agenda.</div>
+              </div>
             </div>
           </div>
         </div>
-      
-        <div class="card">
-          <div class="card-hd"><div class="card-title">Medidas de Tendencia Central</div></div>
-          <div class="metric-grid">
-            <div class="metric-box"><span class="metric-label">Promedio (Media)</span><span class="metric-value" id="central-mean">0.00</span></div>
-            <div class="metric-box"><span class="metric-label">Punto Medio (Mediana)</span><span class="metric-value" id="central-median">0.00</span></div>
-            <div class="metric-box"><span class="metric-label">Más Frecuente (Moda)</span><span class="metric-value" id="central-mode">0.00</span></div>
-          </div>
-        </div>
-      </div>
 
             <div class="metric-grid">
               <div class="metric-box">
