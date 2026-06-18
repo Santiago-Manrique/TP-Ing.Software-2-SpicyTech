@@ -1739,42 +1739,59 @@ const MTPL = {
 };
 
 // Función para guardar espacios en Supabase
+// ====== REEMPLAZÁ TU FUNCIÓN ANTERIOR POR ESTA ======
 async function saveSpaceAPI() {
-  const data = {
-    name:     document.getElementById('sp-name').value.trim(),
-    type:     document.getElementById('sp-type').value,
-    capacity: document.getElementById('sp-cap').value,
-    price:    document.getElementById('sp-price').value
-  };
-  if (!data.name || !data.type || !data.capacity || !data.price) {
-    toast('Completá todos los campos del espacio.', 'err'); return;
+  const name = document.getElementById('sp-name').value.trim();
+  const type = document.getElementById('sp-type').value;
+  const cap  = document.getElementById('sp-cap').value;
+  const price = document.getElementById('sp-price').value;
+
+  if (!name || !type || !cap || !price) {
+    toast('Completá todos los campos del espacio.', 'err'); 
+    return;
   }
+
+  // Estructuramos el paquete garantizando tipos de datos numéricos correctos
+  const data = {
+    name: name,
+    type: type,
+    capacity: parseInt(cap, 10),
+    price: parseFloat(price)
+  };
+
   try {
     const resp = await fetch('https://tp-ing-software-2-spicy-tech.vercel.app/api/spaces', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     });
+    
     const result = await resp.json();
-    if (!result.success) { toast(result.message || 'Error al guardar espacio', 'err'); return; }
+    if (!result.success) { 
+      toast(result.message || 'Error al guardar espacio', 'err'); 
+      return; 
+    }
 
-    // CORREGIDO: actualizamos SPACES_INFO para que el buscador y el contador reflejen el nuevo espacio
     const newSp = result.data || data;
+    
+    // Insertamos el nuevo espacio en el array del frontend respetando el ID o UUID real que devolvió Supabase
     SPACES_INFO.push({
-      id:    newSp.id    || data.name,
-      name:  newSp.name  || data.name,
-      type:  newSp.type  || data.type,
+      id:    newSp.id || Math.random().toString(36).substring(2, 9), // Fallback seguro si no viene ID
+      name:  newSp.name || data.name,
+      type:  newSp.type || data.type,
       cap:   (newSp.capacity || data.capacity) + ' pers.',
       price: '$' + (newSp.price || data.price)
     });
+    
     document.getElementById('stat-spaces').textContent = SPACES_INFO.length;
 
     closeModal();
-    await fetchSpacesAPI(); // Recarga la tabla desde la BD para tener el ID real
+    await fetchSpacesAPI(); // Recarga la tabla directo desde la BD para mapear el UUID real
     toast('Espacio guardado en la base de datos ✓', 'ok');
-  } catch(e) { toast('Error al guardar espacio: ' + e.message, 'err'); }
+  } catch(e) { 
+    toast('Error al guardar espacio: ' + e.message, 'err'); 
+  }
 }
-
 async function createManualRes() {
   const user = document.getElementById('m-user').value.trim();
   
