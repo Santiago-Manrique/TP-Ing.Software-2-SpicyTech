@@ -535,13 +535,11 @@ function renderMonthlyHoursPieChart(items) {
 
 // 💰 CÁLCULO DINÁMICO DE INGRESOS
 function calculateProjectedRevenue() {
-  const now = new Date();
   let total = 0;
   DB_RESERVAS.forEach(r => {
     if (!isActiveReservation(r)) return;
-    const d = parseDateValue(r.booking_date || r.date || r.created_at);
-    if (!d || d.getMonth() !== now.getMonth() || d.getFullYear() !== now.getFullYear()) return;
     
+    // Buscamos el precio del espacio
     const sp = SPACES_INFO.find(s => s.name === r.space_name || s.name === r.spaceName || s.name === r.space);
     if (!sp || !sp.price) return;
     
