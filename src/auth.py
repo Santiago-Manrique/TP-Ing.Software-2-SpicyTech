@@ -326,13 +326,13 @@ class QRCodeGenerator:
 
     @classmethod
     def generate_payload(cls, booking_id: str | int, username: str) -> str:
-        """Genera el payload real que se codifica dentro del QR como URL."""
+        """Genera el payload real usando una ruta absoluta clara."""
         token = cls.generate_token(booking_id, username)
-        # Usamos tu URL de Vercel como base para que el celular sepa adónde ir
-        base_url = os.environ.get("CONTACT_WEB", "https://tp-ing-software-2-spicy-tech.vercel.app")
+        # Fuerza la URL base real sin rutas extrañas
+        base_url = "https://tp-ing-software-2-spicy-tech.vercel.app"
         
-        # En lugar de un JSON, devolvemos un link directo a la vista de validación
-        return f"{base_url}/validate.html?id={booking_id}&token={token}"
+        # Construimos el link de forma que no pueda mezclarse con login.html
+        return f"{base_url}/src/validate.html?id={booking_id}&token={token}"
 
     @classmethod
     def generate_image(cls, booking_id: str | int, username: str, size: int = 10) -> bytes:
