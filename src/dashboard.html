@@ -563,16 +563,11 @@ function refreshStatsVisuals() {
   renderWeeklyBarChart(buildWeeklyReservations());
   renderMonthlyHoursPieChart(buildMonthlyHourCounts());
 
-  const monthlyCount = DB_RESERVAS.filter(row => {
-    if (!isActiveReservation(row)) return false;
-    const date = parseDateValue(row.booking_date || row.date || row.created_at);
-    if (!date) return false;
-    const now = new Date();
-    return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
-  }).length;
+  // Contamos TODAS las reservas activas (sin filtrar por mes)
+  const totalCount = DB_RESERVAS.filter(isActiveReservation).length;
   
-  const monthlyCountEl = document.getElementById('stat-bookings-month');
-  if (monthlyCountEl) monthlyCountEl.textContent = monthlyCount;
+  const countEl = document.getElementById('stat-bookings-month');
+  if (countEl) countEl.textContent = totalCount;
 
   const avgReservationEl = document.getElementById('stat-avg-reservation');
   const stats = buildBoxStats();
