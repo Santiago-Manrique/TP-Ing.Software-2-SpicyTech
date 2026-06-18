@@ -195,7 +195,12 @@ class EmailNotifier(AuthObserver):
             )
 
     def _send_async(self, to: str, subject: str, body: str, attach_qr: bytes = None, qr_filename: str = None):
-        """Envía el email de forma síncrona, dentro del mismo request."""
+        """Envía el email de forma síncrona, dentro del mismo request.
+
+        En un entorno serverless como Vercel, la función se congela apenas se
+        responde al cliente: un hilo en background puede no llegar a ejecutarse.
+        Por eso el envío se hace acá mismo, antes de devolver la respuesta HTTP.
+        """
         if not to:
             print("[EmailNotifier] No se envía email: destinatario vacío.")
             return
@@ -206,7 +211,8 @@ class EmailNotifier(AuthObserver):
         try:
             if not RESEND_API_KEY:
                 raise RuntimeError(
-                    "Configuración de Resend incompleta: definí RESEND_API_KEY en las variables de entorno."
+                    "Configuración de Resend incompleta: definí RESEND_API_KEY en las variables de entorno. "
+                    "Podés generarla en https://resend.com/api-keys"
                 )
 
             params: resend.Emails.SendParams = {
@@ -242,7 +248,7 @@ class EmailNotifier(AuthObserver):
     <li>🏢 Accedé a oficinas privadas</li>
     <li>📊 Gestioná tu historial de uso</li>
   </ul>
-  <p style="margin-top:20px;"><a href="{CONTACT_WEB}/login.html" style="background:#C0392B;color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600;">Iniciar sesión →</a></p>
+  <p style="margin-top:20px;"><a href="#" style="background:#C0392B;color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600;">Iniciar sesión →</a></p>
     <p style="font-size:12px;color:#A08870;margin-top:24px;">SpicyTech Coworking · {CONTACT_EMAIL} · {CONTACT_PHONE}</p>
 </div></body></html>"""
 
@@ -303,11 +309,11 @@ class EmailNotifier(AuthObserver):
 
 
 # ═══════════════════════════════════════════════════════════════
-# SECCIÓN 1.6 ─ QR CODE GENERATOR (ACTUALIZADO PARA CHECK-IN)
+# SECCIÓN 1.6 ─ QR CODE GENERATOR
 # ═══════════════════════════════════════════════════════════════
 
 class QRCodeGenerator:
-    """Genera códigos QR que disparan el check-in físico al ser escaneados."""
+    """Genera códigos QR únicos para pases de acceso."""
 
     QR_SECRET = "spicytech_qr_secret_2026"
 
@@ -320,12 +326,12 @@ class QRCodeGenerator:
 
     @classmethod
     def generate_payload(cls, booking_id: str | int, username: str) -> str:
-        """
-        Genera la URL directa que leerá la cámara del celular.
-        Al escanear el QR, redirecciona al administrador al Dashboard con el 
-        parámetro de validación listo para registrar el ingreso físico.
-        """
-        return f"https://tp-ing-software-2-spicy-tech.vercel.app/dashboard.html?valida={booking_id}"
+        """Genera el payload real que se codifica dentro del QR."""
+        return json.dumps({
+            "booking_id": str(booking_id),
+            "username": username,
+            "token": cls.generate_token(booking_id, username),
+        }, ensure_ascii=False, separators=(",", ":"))
 
     @classmethod
     def generate_image(cls, booking_id: str | int, username: str, size: int = 10) -> bytes:
@@ -336,7 +342,7 @@ class QRCodeGenerator:
             box_size=size,
             border=4,
         )
-        # Inyectamos la URL directamente en el QR
+        # El QR contiene el identificador de la reserva y el usuario asociado.
         qr.add_data(cls.generate_payload(booking_id, username))
         qr.make(fit=True)
 
@@ -540,7 +546,7 @@ class SupabaseUserRepository(SupabaseTableRepository, UserRepository):
         self._table("users").update({
             "email":           user.email,
             "password_hash":   user.password_hash,
-            "is_active":       int(user.is_active),
+            "is_active":       int(user.is_active), # ← Acá también
             "failed_attempts": user.failed_attempts,
         }).eq("username", user.username).execute()
 
@@ -880,9 +886,8 @@ class BookingRepository(SupabaseTableRepository):
         response = self._table(self.TABLE_NAME).delete().in_("id", coerced_ids).execute()
         return len(response.data or [])
 
-    def get_by_id(self, booking_id: str) -> dict | None:
-        """Obtiene una reserva por su ID (int o string). 
-        Usado para leer y validar un código QR desde la Base de Datos."""
+    def get_by_id(self, booking_id):
+        """Obtiene una reserva por su ID (int o string)."""
         normalized_id = self._coerce_id(booking_id)
         response = self._table(self.TABLE_NAME).select("*").eq("id", normalized_id).execute()
         return self._first_row(response)
