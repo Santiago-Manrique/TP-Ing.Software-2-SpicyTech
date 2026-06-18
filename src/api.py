@@ -286,6 +286,33 @@ def bulk_delete_bookings():
         import traceback
         traceback.print_exc()
         return jsonify({"success": False, "message": str(e)}), 500
+      @app.get("/api/bookings/validate")
+
+def validate_booking_qr():
+    """Valida un token QR escaneado y devuelve los datos de la reserva."""
+    booking_id = request.args.get("id")
+    token = request.args.get("token")
+    
+    if not booking_id or not token:
+        return jsonify({"success": False, "message": "Código QR inválido o incompleto"}), 400
+        
+    try:
+        try:
+            booking_id_typed = int(booking_id)
+        except ValueError:
+            booking_id_typed = booking_id
+            
+        booking = booking_repo.get_by_id(booking_id_typed)
+        if not booking:
+            return jsonify({"success": False, "message": "Esta reserva no existe en el sistema"}), 404
+            
+        if booking.get("qr_token") != token:
+            return jsonify({"success": False, "message": "Pase QR falsificado, inválido o expirado"}), 401
+            
+        return jsonify({"success": True, "data": booking}), 200
+        
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
 
 @app.get("/api/bookings/<booking_id>/qr")
 def get_booking_qr(booking_id):
