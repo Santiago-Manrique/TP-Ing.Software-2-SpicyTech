@@ -1208,25 +1208,36 @@ function percentile(sortedValues, p) {
 
 // 📊 BARRAS 7 DÍAS: Mostramos de ayer a +5 días para siempre ver datos cercanos
 function buildWeeklyReservations() {
-  const today = new Date(); today.setHours(0, 0, 0, 0);
-  const days = [];
-  for (let offset = -1; offset <= 5; offset++) {
-    const date = new Date(today); date.setDate(today.getDate() + offset);
-    days.push({ date, key: toDateKey(date), label: formatShortDate(date) });
-  }
-
-  const counts = new Map(days.map(day => [day.key, 0]));
+  const counts = new Map();
+  
+  // Agrupamos TODAS las reservas por fecha
   DB_RESERVAS.forEach(row => {
     if (!isActiveReservation(row)) return;
     const date = parseDateValue(row.booking_date || row.date || row.created_at);
-    if (!date) return; date.setHours(0, 0, 0, 0);
+    if (!date) return;
     const key = toDateKey(date);
-    if (counts.has(key)) counts.set(key, counts.get(key) + 1);
+    counts.set(key, (counts.get(key) || 0) + 1);
   });
-  return days.map(day => ({
-    label: day.date.toLocaleDateString('es-AR', { weekday: 'short' }).replace('.', ''),
-    sublabel: day.label, value: counts.get(day.key) || 0,
-  }));
+  
+  // Tomamos las últimas 7 fechas que tengan reservas
+  let sortedKeys = Array.from(counts.keys()).sort().reverse().slice(0, 7).reverse();
+  
+  // Si la base de datos está vacía, ponemos fechas de relleno para que el gráfico no desaparezca
+  if (sortedKeys.length === 0) {
+    const today = new Date();
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(today); d.setDate(today.getDate() - i);
+      sortedKeys.push(toDateKey(d));
+    }
+  }
+
+  return sortedKeys.map(key => {
+    const d = new Date(`${key}T00:00:00`);
+    return {
+      label: formatShortDate(d),
+      value: counts.get(key) || 0
+    };
+  });
 }
 
 function buildMonthlyHourCounts() {
