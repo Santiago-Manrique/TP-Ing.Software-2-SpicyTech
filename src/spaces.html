@@ -1387,7 +1387,7 @@ async function submitReserva() {
       notas:     (document.getElementById('rf-notas')?.value || '').trim()
     };
 
-    const response = await fetch('http://127.0.0.1:5000/api/bookings', {
+    const response = await fetch('https://tp-ing-software-2-spicy-tech.vercel.app/api/bookings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1502,7 +1502,7 @@ document.getElementById('auth-guard').addEventListener('click', function(e) {
 // Función para ir a buscar las reservas
 async function loadBookingsFromAPI() {
   try {
-    const response = await fetch('http://127.0.0.1:5000/api/bookings');
+    const response = await fetch('https://tp-ing-software-2-spicy-tech.vercel.app/api/bookings');
     const result = await response.json();
     if (result.success) {
       // Adaptamos la data para que el calendario la entienda
