@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Validación de Pase · SpicyTech</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --dark:#1C1209; --txt:#2C1A10; --txt2:#5C4033; --txt3:#8C6B55;
+      --cream:#FAF6F1; --cream-mid:#DDD0C4; --white:#FFFFFF;
+      --green:#2E7D52; --green-pale:#F0FBF4;
+      --red:#C0392B; --red-pale:#FEE9E7;
+      --rm:12px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--txt);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+    
+    .scanner-card {
+      background: var(--white);
+      border-radius: 24px;
+      width: 100%;
+      max-width: 400px;
+      padding: 32px 24px;
+      box-shadow: 0 16px 40px rgba(28,18,9,.08);
+      border: 1px solid var(--cream-mid);
+      text-align: center;
+    }
+
+    .status-icon {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px;
+      margin: 0 auto 16px;
+    }
+    
+    .status-icon.loading { background: #E8E8E8; animation: pulse 1.5s infinite; }
+    .status-icon.valid { background: var(--green-pale); color: var(--green); border: 2px solid rgba(46,125,82,.2); }
+    .status-icon.invalid { background: var(--red-pale); color: var(--red); border: 2px solid rgba(192,57,43,.2); }
+
+    @keyframes pulse { 0% {opacity:.5;} 50% {opacity:1;} 100% {opacity:.5;} }
+
+    .status-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px; font-weight: 800; color: var(--dark);
+      margin-bottom: 6px;
+    }
+    .status-msg { font-size: 14px; color: var(--txt2); margin-bottom: 24px; line-height: 1.5; }
+
+    .data-grid {
+      display: grid; gap: 12px;
+      background: var(--cream);
+      border: 1px solid var(--cream-mid);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: left;
+      display: none; /* Oculto hasta que cargue */
+    }
+
+    .data-row { display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+    .data-lbl { color: var(--txt3); font-weight: 500; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; }
+    .data-val { color: var(--dark); font-weight: 700; }
+
+    .btn-action {
+      display: block; width: 100%;
+      padding: 14px; background: var(--dark);
+      color: #fff; text-decoration: none;
+      border-radius: var(--rm); font-weight: 600;
+      margin-top: 24px; transition: background .2s;
+    }
+    .btn-action:hover { background: #000; }
+  </style>
+</head>
+<body>
+
+  <div class="scanner-card">
+    <div class="status-icon loading" id="st-icon">⏳</div>
+    <div class="status-title" id="st-title">Validando pase...</div>
+    <div class="status-msg" id="st-msg">Verificando firma de seguridad en Supabase.</div>
+
+    <div class="data-grid" id="data-grid">
+      <div class="data-row"><span class="data-lbl">Usuario</span><span class="data-val" id="d-user">—</span></div>
+      <div class="data-row"><span class="data-lbl">Espacio</span><span class="data-val" id="d-space">—</span></div>
+      <div class="data-row"><span class="data-lbl">Fecha</span><span class="data-val" id="d-date">—</span></div>
+      <div class="data-row"><span class="data-lbl">Horario</span><span class="data-val" id="d-time">—</span></div>
+    </div>
+
+    <a href="dashboard.html" class="btn-action" style="display:none;" id="btn-admin">Ir al panel de admin →</a>
+  </div>
+
+  <script>
+    async function validateQR() {
+      // Obtenemos los parámetros de la URL escaneada
+      const params = new URLSearchParams(window.location.search);
+      const bookingId = params.get('id');
+      const token = params.get('token');
+
+      const icon = document.getElementById('st-icon');
+      const title = document.getElementById('st-title');
+      const msg = document.getElementById('st-msg');
+      const grid = document.getElementById('data-grid');
+
+      if (!bookingId || !token) {
+        showError("QR Inválido", "Este código QR no pertenece a Nexo Coworking.");
+        return;
+      }
+
+      try {
+        // Le preguntamos al servidor de Flask si el token coincide
+        const response = await fetch(`https://tp-ing-software-2-spicy-tech.vercel.app/api/bookings/validate?id=${bookingId}&token=${token}`);
+        const result = await response.json();
+
+        if (result.success) {
+          const r = result.data;
+          // Validar estado de la reserva (asegurar que siga confirmada)
+          if (r.status.toLowerCase() !== 'confirmada' && r.status.toLowerCase() !== 'confirmed') {
+             showError("Reserva inactiva", `La reserva se encuentra en estado: ${r.status}.`);
+             return;
+          }
+
+          // ÉXITO: El QR es 100% válido
+          icon.className = 'status-icon valid';
+          icon.textContent = '✓';
+          title.textContent = 'Pase Válido';
+          title.style.color = 'var(--green)';
+          msg.textContent = 'Identidad verificada exitosamente. Se autoriza el acceso.';
+          
+          document.getElementById('d-user').textContent = r.username;
+          document.getElementById('d-space').textContent = r.space_name;
+          document.getElementById('d-date').textContent = r.booking_date;
+          document.getElementById('d-time').textContent = r.booking_time;
+          grid.style.display = 'grid';
+
+        } else {
+          showError("Acceso Denegado", result.message);
+        }
+      } catch (error) {
+        showError("Error de Conexión", "No se pudo comunicar con el servidor.");
+      }
+    }
+
+    function showError(errTitle, errDesc) {
+      const icon = document.getElementById('st-icon');
+      icon.className = 'status-icon invalid';
+      icon.textContent = '✕';
+      document.getElementById('st-title').textContent = errTitle;
+      document.getElementById('st-title').style.color = 'var(--red)';
+      document.getElementById('st-msg').textContent = errDesc;
+    }
+
+    // Ejecutar al abrir la página
+    window.addEventListener('DOMContentLoaded', () => {
+      validateQR();
+      
+      // Mostrar botón de admin si el usuario logueado en este dispositivo es admin
+      const rawUser = localStorage.getItem('nexo_user');
+      if (rawUser) {
+        try { if (JSON.parse(rawUser).role === 'admin') document.getElementById('btn-admin').style.display = 'block'; } catch(e){}
+      }
+    });
+  </script>
+</body>
+</html>
