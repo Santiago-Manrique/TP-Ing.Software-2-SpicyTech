@@ -247,6 +247,7 @@
     <ul class="sb-nav">
       <li><a href="home.html"><span class="sb-icon">🏠</span> Ver sitio público</a></li>
       <li><a href="spaces.html"><span class="sb-icon">🗂️</span> Ver espacios</a></li>
+      <li><a href="mis-reservas.html"><span class="sb-icon">📋</span> Ver mis reservas</a></li>
     </ul>
 
     <div class="sb-footer">
@@ -313,7 +314,7 @@
               <button class="qa-btn" onclick="openModal('new-reservation')"><div style="font-size:22px;margin-bottom:5px">📅</div><div style="font-size:13px;font-weight:600;color:var(--dark)">Nueva reserva</div><div style="font-size:11px;color:var(--txt3);margin-top:1px">Reservar manualmente</div></button>
               <button class="qa-btn" onclick="openModal('new-space')"><div style="font-size:22px;margin-bottom:5px">🏢</div><div style="font-size:13px;font-weight:600;color:var(--dark)">Agregar espacio</div><div style="font-size:11px;color:var(--txt3);margin-top:1px">Alta de espacio</div></button>
               <button class="qa-btn" onclick="openModal('new-user')"><div style="font-size:22px;margin-bottom:5px">👤</div><div style="font-size:13px;font-weight:600;color:var(--dark)">Nuevo usuario</div><div style="font-size:11px;color:var(--txt3);margin-top:1px">Registrar manualmente</div></button>
-              <button class="qa-btn" onclick="window.open('http://127.0.0.1:5000/api/export/estadistica', '_blank')"><div style="font-size:22px;margin-bottom:5px">📊</div><div style="font-size:13px;font-weight:600;color:var(--dark)">Exportar reporte (CSV)</div><div style="font-size:11px;color:var(--txt3);margin-top:1px">CSV del mes actual</div></button>
+              <button class="qa-btn" onclick="window.open('https://tp-ing-software-2-spicy-tech.vercel.app/api/export/estadistica', '_blank')"><div style="font-size:22px;margin-bottom:5px">📊</div><div style="font-size:13px;font-weight:600;color:var(--dark)">Exportar reporte (CSV)</div><div style="font-size:11px;color:var(--txt3);margin-top:1px">CSV del mes actual</div></button>
             </div>
           </div>
         </div>
@@ -517,7 +518,7 @@ function getAllReservations() {
 function saveReservations(r) { console.log('Reservas gestionadas por API/Supabase', r); }
 /* ── CONEXIÓN A LA API REAL PARA USUARIOS ── */
 
-const API_BASE = 'http://127.0.0.1:5000/api';
+const API_BASE = 'https://tp-ing-software-2-spicy-tech.vercel.app/api';
 let USRS = []; // Ahora es una variable que llenaremos desde la base de datos
 
 function getAllUsers() {
@@ -529,7 +530,7 @@ function getAllUsers() {
 async function fetchUsersFromAPI() {
   console.log("1. Intentando buscar usuarios en la API...");
   try {
-    const response = await fetch('http://127.0.0.1:5000/api/users');
+    const response = await fetch('https://tp-ing-software-2-spicy-tech.vercel.app/api/users');
     const result = await response.json();
     console.log("2. Datos recibidos del servidor:", result);
 
@@ -558,7 +559,7 @@ let DB_RESERVAS = []; // Variable global para guardar la info real
 
 async function fetchBookingsAPI() {
   try {
-    const response = await fetch('http://127.0.0.1:5000/api/bookings');
+    const response = await fetch('https://tp-ing-software-2-spicy-tech.vercel.app/api/bookings');
     const result = await response.json();
 
     if (result.success) {
@@ -572,7 +573,11 @@ async function fetchBookingsAPI() {
         date: r.booking_date,
         time: r.booking_time,
         status: r.status || 'pendiente'
-      }));
+      })).sort((a, b) => {
+        // Ordenar de más nuevo a más viejo por ID (timestamp) o fecha
+        if (a.id && b.id) return Number(b.id) - Number(a.id);
+        return (b.date || '').localeCompare(a.date || '');
+      });
 
       renderRes(reservasFront); // Dibujamos la tabla de reservas
       renderOv();                // Dibujamos la tabla de últimas reservas en overview
@@ -587,7 +592,7 @@ async function fetchBookingsAPI() {
 /* ── CONEXIÓN A LA API PARA ESPACIOS (PASO 2) ── */
 async function fetchSpacesAPI() {
   try {
-    const response = await fetch('http://127.0.0.1:5000/api/spaces');
+    const response = await fetch('https://tp-ing-software-2-spicy-tech.vercel.app/api/spaces');
     const result = await response.json();
 
     if (result.success) {
@@ -1517,7 +1522,7 @@ async function cambiarEstadoReserva(id, nuevoEstado) {
 
   try {
     // Codificamos el id para que enteros o UUIDs no rompan la URL
-    const url = `http://127.0.0.1:5000/api/bookings/${encodeURIComponent(id)}`;
+    const url = `https://tp-ing-software-2-spicy-tech.vercel.app/api/bookings/${encodeURIComponent(id)}`;
     const response = await fetch(url, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -1683,7 +1688,7 @@ async function cancelRes(id) {
 
 async function toggleUsr(un, act) {
   try {
-    const response = await fetch(`http://127.0.0.1:5000/api/users/${encodeURIComponent(un)}`, {
+    const response = await fetch(`https://tp-ing-software-2-spicy-tech.vercel.app/api/users/${encodeURIComponent(un)}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ is_active: act })
@@ -1745,7 +1750,7 @@ async function saveSpaceAPI() {
     toast('Completá todos los campos del espacio.', 'err'); return;
   }
   try {
-    const resp = await fetch('http://127.0.0.1:5000/api/spaces', {
+    const resp = await fetch('https://tp-ing-software-2-spicy-tech.vercel.app/api/spaces', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
@@ -1794,7 +1799,7 @@ async function createManualRes() {
   };
 
   try {
-    const response = await fetch('http://127.0.0.1:5000/api/bookings', {
+    const response = await fetch('https://tp-ing-software-2-spicy-tech.vercel.app/api/bookings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -1825,7 +1830,7 @@ async function createManualUser() {
   if (!un || !em || !pw) { toast('Complet� todos los campos.','err'); return; }
 
   try {
-    const response = await fetch('http://127.0.0.1:5000/api/auth/signup', {
+    const response = await fetch('https://tp-ing-software-2-spicy-tech.vercel.app/api/auth/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

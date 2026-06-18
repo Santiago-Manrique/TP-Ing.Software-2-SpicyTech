@@ -34,8 +34,8 @@ JWT_SECRET = "nexo_coworking_super_secret_key_2025"
 JWT_EXPIRATION_HOURS = 2
 
 # ---------- Supabase ----------
-SUPABASE_URL = "https://kyjszgpgyykktbhsqqjg.supabase.co"
-SUPABASE_KEY = "sb_publishable_7XJYNkkzzbg7HZC7bEqv3w_zxFFxd8U"
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://kyjszgpgyykktbhsqqjg.supabase.co")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "sb_publishable_7XJYNkkzzbg7HZC7bEqv3w_zxFFxd8U")
 
 # Inicializamos el cliente UNA sola vez para todo el módulo (Mejora drástica de rendimiento)
 supabase_client: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
