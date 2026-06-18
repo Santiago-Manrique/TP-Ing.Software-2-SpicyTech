@@ -739,9 +739,10 @@ function buildWeeklyReservations() {
   today.setHours(0, 0, 0, 0);
 
   const days = [];
-  for (let offset = 6; offset >= 0; offset--) {
+  // 🚀 CAMBIO ACÁ: Ahora miramos desde HOY hacia los PRÓXIMOS 7 DÍAS
+  for (let offset = 0; offset < 7; offset++) {
     const date = new Date(today);
-    date.setDate(today.getDate() - offset);
+    date.setDate(today.getDate() + offset);
     days.push({ date, key: toDateKey(date), label: formatShortDate(date) });
   }
 
@@ -835,7 +836,9 @@ function renderMonthlyHoursPieChart(items) {
       }],
     },
     options: {
-      responsive: true, maintainAspectRatio: true, animation: { duration: 350 },
+      responsive: true, 
+      maintainAspectRatio: false, // 🚀 CAMBIO ACÁ: Evita que el gráfico se aplaste
+      animation: { duration: 350 },
       plugins: {
         legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, color: '#2C1A10', font: { size: 12 }, padding: 12 } },
       },
