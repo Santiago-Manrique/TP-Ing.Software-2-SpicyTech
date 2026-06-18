@@ -429,35 +429,33 @@
             </div>
           </div>
 
-          <div class="card">
-            <div class="analytics-head">
-              <div>
-                <div class="card-title">Dispersión X vs Y</div>
-                <div style="font-size:12px;color:var(--txt3);margin-top:4px;line-height:1.45;">Puntos reales y recta de mínimos cuadrados actualizada en tiempo real al recargar reservas.</div>
-              </div>
-              <span class="pill-tag warn" id="analytics-ls">LS activa</span>
-            </div>
-            <div class="chart-shell">
-              <canvas id="analytics-chart"></canvas>
-            </div>
-          </div>
+
         </div>
         <div class="card">
           <div class="card-hd"><div class="card-title">Horarios más reservados (este mes)</div></div>
-          <div class="barchart dyn" id="monthly-hours-chart"></div>
+          <div class="chart-shell">
+            <canvas id="monthly-hours-chart"></canvas>
+          </div>
         </div>
         <div class="card" style="margin-top:20px">
-          <div class="analytics-head">
-            <div>
-              <div class="card-title">Caja estadística de horas reservadas</div>
-              <div style="font-size:12px;color:var(--txt3);margin-top:4px;line-height:1.45;">Incluye mínimo, Q1, mediana, media, moda, Q3 y máximo sobre las reservas activas.</div>
+          <div class="card-hd"><div class="card-title">Medidas de Tendencia Central</div></div>
+          <div class="metric-grid">
+            <div class="metric-box">
+              <span class="metric-label">Media (Promedio)</span>
+              <span class="metric-value" id="central-mean">0.00</span>
+              <span class="metric-sub">Suma total / cantidad de reservas</span>
             </div>
-            <div class="analysis-tools">
-              <span class="pill-tag warn" id="boxplot-scope">Último mes</span>
-              <button class="btn-xs btn-xs-ghost" onclick="generateDemoReservations()">Generar reservas demo</button>
+            <div class="metric-box">
+              <span class="metric-label">Mediana (Valor Central)</span>
+              <span class="metric-value" id="central-median">0.00</span>
+              <span class="metric-sub">Valor que divide al 50%</span>
+            </div>
+            <div class="metric-box">
+              <span class="metric-label">Moda (Más Frecuente)</span>
+              <span class="metric-value" id="central-mode">0.00</span>
+              <span class="metric-sub">Valor que más se repite</span>
             </div>
           </div>
-          <div class="boxplot-shell" id="boxplot-container"></div>
         </div>
       </div>
 
@@ -678,6 +676,7 @@ function fmtSlots(slots) {
 }
 
 let analyticsChart = null;
+let monthlyHoursChart = null;
 let quickPackPreset = null;
 
 function normalizeStatus(rawStatus) {
@@ -958,10 +957,70 @@ function renderBoxPlot(containerId, stats) {
   `;
 }
 
+function renderMonthlyHoursPieChart(items) {
+  const canvas = document.getElementById('monthly-hours-chart');
+  if (!canvas || !window.Chart) return;
+
+  if (!items || !items.length) {
+    if (monthlyHoursChart) {
+      monthlyHoursChart.destroy();
+      monthlyHoursChart = null;
+    }
+    return;
+  }
+
+  const colors = [
+    '#C0392B', '#2E7D52', '#B45309', '#4338CA', '#7A3B8C', 
+    '#1E6B8C', '#E8604C', '#D4614F', '#96281B', '#205C3E',
+    '#8B5A2B', '#2C5282'
+  ];
+
+  if (monthlyHoursChart) monthlyHoursChart.destroy();
+
+  monthlyHoursChart = new Chart(canvas, {
+    type: 'doughnut',
+    data: {
+      labels: items.map(item => item.label),
+      datasets: [{
+        data: items.map(item => item.value),
+        backgroundColor: colors.slice(0, items.length),
+        borderColor: '#ffffff',
+        borderWidth: 2,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      animation: { duration: 350 },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            usePointStyle: true,
+            boxWidth: 8,
+            color: '#2C1A10',
+            font: { size: 12 },
+            padding: 12,
+          },
+        },
+        tooltip: {
+          callbacks: {
+            label(context) {
+              const total = context.dataset.data.reduce((a, b) => a + b, 0);
+              const value = context.parsed || 0;
+              const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+              return `${context.label}: ${value} (${percentage}%)`;
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
 function refreshStatsVisuals() {
   renderBarBlocks('weekly-reservations-chart', buildWeeklyReservations());
-  renderBarBlocks('monthly-hours-chart', buildMonthlyHourCounts());
-  renderBoxPlot('boxplot-container', buildBoxStats());
+  renderMonthlyHoursPieChart(buildMonthlyHourCounts());
 
   const monthlyCount = DB_RESERVAS.filter(row => {
     if (!isActiveReservation(row)) return false;
@@ -1239,6 +1298,11 @@ function updateAnalytics() {
   const alertTitle = document.getElementById('analysis-alert-title');
   const alertText = document.getElementById('analysis-alert-text');
 
+  // Elementos de medidas de tendencia central
+  const centralMeanEl = document.getElementById('central-mean');
+  const centralMedianEl = document.getElementById('central-median');
+  const centralModeEl = document.getElementById('central-mode');
+
   if (!samples.length) {
     if (sampleEl) sampleEl.textContent = 'n=0';
     if (meanEl) meanEl.textContent = '0.0';
@@ -1246,12 +1310,14 @@ function updateAnalytics() {
     if (modeEl) modeEl.textContent = '0.0';
     if (rEl) rEl.textContent = 'r=0.00';
     if (pEl) pEl.textContent = 'p≈0.0000';
+    if (centralMeanEl) centralMeanEl.textContent = '0.00';
+    if (centralMedianEl) centralMedianEl.textContent = '0.00';
+    if (centralModeEl) centralModeEl.textContent = '0.00';
     if (alertBox) {
       alertBox.className = 'analysis-alert ok';
       alertTitle.textContent = 'Esperando datos reales…';
       alertText.textContent = 'La analítica se activa cuando el dashboard carga reservas desde Supabase.';
     }
-    updateAnalyticsChart([], { slope: 0, intercept: 0, r: 0 });
     renderQuickPackButtons(4);
     return;
   }
@@ -1271,6 +1337,9 @@ function updateAnalytics() {
   if (modeEl) modeEl.textContent = stats.mode.toFixed(2);
   if (rEl) rEl.textContent = `r=${regression.r.toFixed(2)}`;
   if (pEl) pEl.textContent = `p≈${tResult.pApprox.toFixed(4)}`;
+  if (centralMeanEl) centralMeanEl.textContent = stats.mean.toFixed(2);
+  if (centralMedianEl) centralMedianEl.textContent = stats.median.toFixed(2);
+  if (centralModeEl) centralModeEl.textContent = stats.mode.toFixed(2);
 
   if (alertBox) {
     if (tResult.reject) {
@@ -1280,12 +1349,11 @@ function updateAnalytics() {
     } else {
       alertBox.className = 'analysis-alert ok';
       alertTitle.textContent = 'No se rechaza H0';
-      alertText.textContent = `La evidencia actual no alcanza para afirmar que la media de horas reservadas supere 4. El paquete recomendado sigue guiado por la moda observada.`;
+      alertText.textContent = `La evidencia actual no alcanza para afirmar que la media de horas reservadas supera 4. El paquete recomendado sigue guiado por la moda observada.`;
     }
   }
 
   renderQuickPackButtons(stats.mode);
-  updateAnalyticsChart(samples, regression);
   refreshStatsVisuals();
 }
 
