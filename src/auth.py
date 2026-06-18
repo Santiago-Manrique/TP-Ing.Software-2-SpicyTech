@@ -705,7 +705,6 @@ class AuthService:
 
         if not user:
             self._event_bus.publish(AuthEvent(AuthEvent.LOGIN_FAILED, {"username": username}))
-            # FIJATE ACÁ: No hay coma al final, solo el AuthResult
             return AuthResult(False, "Credenciales incorrectas.", errors=["Usuario no encontrado."])
 
         if not user.is_active:
@@ -899,8 +898,10 @@ class BookingRepository(SupabaseTableRepository):
 
     def create(self, booking_data: dict) -> dict | None:
         record = dict(booking_data)
-        if not record.get("id"):
-            record["id"] = self._generate_numeric_id()
+        
+        # 🛡️ ESCUDO FINAL: Aseguramos que no haya ningún rastro del 'id' numérico
+        if "id" in record:
+            del record["id"]
 
         additional_info = record.get("additional_info")
         if isinstance(additional_info, (dict, list)):
@@ -990,8 +991,11 @@ class SpaceRepository(SupabaseTableRepository):
     def create(self, space_data: dict) -> dict | None:
         """Crea un nuevo espacio en la base de datos."""
         record = dict(space_data)
-        if not record.get("id"):
-            record["id"] = self._generate_numeric_id()
+        
+        # 🛡️ ESCUDO FINAL: Aseguramos que no haya ningún rastro del 'id' numérico
+        if "id" in record:
+            del record["id"]
+            
         response = self._table(self.TABLE_NAME).insert(record).execute()
         return self._first_row(response)
 
