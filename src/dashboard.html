@@ -235,6 +235,7 @@
 
     <div class="content">
 
+      <!-- ================== VISTA: OVERVIEW ================== -->
       <div class="view active" id="view-overview">
         <div class="stats-row">
           <div class="stat-card"><div class="s-icon" style="background:var(--red-pale)">📅</div><div><div class="s-num" id="stat-res-active">0</div><div class="s-label">Reservas confirmadas</div></div></div>
@@ -284,6 +285,7 @@
         </div>
       </div>
 
+      <!-- ================== VISTA: RESERVAS ================== -->
       <div class="view" id="view-reservations">
         <div class="sbar">
           <div class="swrap"><span class="sico">🔍</span><input class="sinput" placeholder="Buscar usuario, espacio…" oninput="fRes(this.value)"></div>
@@ -299,6 +301,7 @@
         </div>
       </div>
 
+      <!-- ================== VISTA: ESPACIOS ================== -->
       <div class="view" id="view-spaces">
         <div class="sbar">
           <div class="swrap"><span class="sico">🔍</span><input class="sinput" placeholder="Buscar espacio…" oninput="fSp(this.value)"></div>
@@ -310,6 +313,7 @@
         </div>
       </div>
 
+      <!-- ================== VISTA: USUARIOS ================== -->
       <div class="view" id="view-users">
         <div class="sbar">
           <div class="swrap"><span class="sico">🔍</span><input class="sinput" placeholder="Buscar nombre, email…" oninput="fUsr(this.value)"></div>
@@ -325,38 +329,40 @@
         </div>
       </div>
 
+      <!-- ================== VISTA: ESTADÍSTICAS ================== -->
       <div class="view" id="view-stats">
         
+        <!-- KPIs Principales -->
         <div class="stats-row">
           <div class="stat-card"><div class="s-icon" style="background:var(--red-pale)">📅</div><div><div class="s-num" id="stat-bookings-month">0</div><div class="s-label">Reservas este mes</div></div></div>
-          <div class="stat-card"><div class="s-icon" style="background:var(--green-pale)">💰</div><div><div class="s-num">$84k</div><div class="s-label">Ingresos proyectados</div></div></div>
+          <div class="stat-card"><div class="s-icon" style="background:var(--green-pale)">💰</div><div><div class="s-num" id="stat-revenue-month">$0</div><div class="s-label">Ingresos proyectados</div></div></div>
           <div class="stat-card"><div class="s-icon" style="background:var(--amber-pale)">⭐</div><div><div class="s-num">4.8</div><div class="s-label">Satisfacción</div></div></div>
           <div class="stat-card"><div class="s-icon" style="background:#EEF2FF">⏱️</div><div><div class="s-num" id="stat-avg-reservation">0.0h</div><div class="s-label">Promedio de reserva</div></div></div>
         </div>
         
+        <!-- Fila de Gráficos Superiores -->
         <div class="g2">
           
+          <!-- Bar Chart (Chart.js) -->
           <div class="card">
             <div class="card-hd">
               <div class="card-title">Reservas por día (próximos 7 días)</div>
-              <button class="btn-xs btn-xs-ghost" onclick="generateDemoReservations()">Cargar Demo</button>
             </div>
-            <div class="chart-shell">
+            <div class="chart-shell" style="height: 250px;">
               <canvas id="weekly-reservations-canvas"></canvas>
             </div>
           </div>
           
+          <!-- Ingresos por Tipo de Espacio -->
           <div class="card">
-            <div class="card-hd"><div class="card-title">Ingresos por tipo de espacio</div></div>
-            <div style="display:flex;flex-direction:column;gap:15px;margin-top:10px;flex:1;justify-content:center;">
-              <div><div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px"><span>Salas de reunión</span><span style="font-weight:700">$38.400</span></div><div style="height:8px;background:var(--cream-dark);border-radius:4px"><div style="height:100%;width:46%;background:var(--red);border-radius:4px"></div></div></div>
-              <div><div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px"><span>Oficinas privadas</span><span style="font-weight:700">$33.000</span></div><div style="height:8px;background:var(--cream-dark);border-radius:4px"><div style="height:100%;width:39%;background:var(--amber);border-radius:4px"></div></div></div>
-              <div><div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px"><span>Capacitación</span><span style="font-weight:700">$8.400</span></div><div style="height:8px;background:var(--cream-dark);border-radius:4px"><div style="height:100%;width:10%;background:var(--green);border-radius:4px"></div></div></div>
-              <div><div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px"><span>Espacio compartido</span><span style="font-weight:700">$4.200</span></div><div style="height:8px;background:var(--cream-dark);border-radius:4px"><div style="height:100%;width:5%;background:#4338CA;border-radius:4px"></div></div></div>
+            <div class="card-hd"><div class="card-title">Ocupación por tipo de espacio</div></div>
+            <div id="type-bars-stats" style="display:flex;flex-direction:column;gap:15px;margin-top:10px;flex:1;justify-content:center;">
+              <!-- Se rellena por JavaScript con los datos reales -->
             </div>
           </div>
         </div>
 
+        <!-- Explicación amigable de métricas -->
         <div class="card" style="background: linear-gradient(135deg, var(--white), var(--cream)); border-color: rgba(192,57,43,.15);">
           <div class="card-hd"><div class="card-title">Análisis de Comportamiento: ¿Qué dicen tus datos?</div></div>
           
@@ -364,12 +370,12 @@
             <div class="metric-box">
               <div class="metric-label">El Promedio (Media)</div>
               <div class="metric-value" id="central-mean">0.0h</div>
-              <div class="metric-sub">Es el <strong>tiempo habitual</strong> que los clientes alquilan tus espacios. Te ayuda a estimar la facturación mensual general.</div>
+              <div class="metric-sub">Es el <strong>tiempo habitual</strong> que los clientes alquilan tus espacios. Te ayuda a estimar la facturación general.</div>
             </div>
             <div class="metric-box">
               <div class="metric-label">El Punto Medio (Mediana)</div>
               <div class="metric-value" id="central-median">0.0h</div>
-              <div class="metric-sub">El <strong>50% de tus clientes</strong> se queda menos de este tiempo, y el otro 50% se queda más horas. Filtra alquileres extremadamente raros o largos.</div>
+              <div class="metric-sub">El <strong>50% de tus clientes</strong> se queda menos de este tiempo, y el otro 50% se queda más horas. Filtra los alquileres raros.</div>
             </div>
             <div class="metric-box">
               <div class="metric-label">El Más Frecuente (Moda)</div>
@@ -392,6 +398,7 @@
           </div>
         </div>
 
+        <!-- Fila Inferior de Gráficos -->
         <div class="g2">
           <div class="card">
             <div class="card-hd"><div class="card-title">Horarios más solicitados</div></div>
@@ -400,6 +407,7 @@
             </div>
           </div>
 
+          <!-- Información avanzada (Correlación) -->
           <div class="card">
             <div class="card-hd">
               <div class="card-title">Correlación de Anticipación</div>
@@ -412,7 +420,7 @@
               <p>El sistema mide de forma automática si las personas que reservan <strong>con muchos días de anticipación</strong> tienden a quedarse <strong>más horas</strong> en el local.</p>
               <div style="background:var(--red-pale); border-left: 3px solid var(--red); padding: 12px; border-radius: 6px;">
                 <strong>¿Para qué sirve esto?</strong><br>
-                Si la correlación es alta, el sistema puede enviar correos automáticos ofreciendo <em>upgrades</em> (ej. cambiar a jornada completa) a quienes reserven con 10 días o más de anticipación.
+                Si la correlación es alta, el sistema enviará correos automáticos ofreciendo <em>upgrades</em> (ej. cambiar a jornada completa) a quienes reserven con 10 días o más de anticipación.
               </div>
             </div>
           </div>
@@ -424,10 +432,12 @@
   </div>
 </div>
 
+<!-- MODAL -->
 <div class="mbg" id="mbg" onclick="closeModal(event)">
   <div class="mbox"><div id="mcontent"></div></div>
 </div>
 
+<!-- TOAST -->
 <div class="toast" id="toast-el"></div>
 
 <script>
@@ -436,17 +446,18 @@
 ══════════════════════════════════════════════ */
 let DB_RESERVAS = []; 
 let USRS = [];
+let SPACES_INFO = [];
 let weeklyBarChart = null;
 let monthlyHoursChart = null;
 let quickPackPreset = null;
+const API_BASE = 'https://tp-ing-software-2-spicy-tech.vercel.app/api';
 
-// RENDER DEL GRÁFICO DE BARRAS DE 7 DÍAS CON CHART.JS
+// GRÁFICO DE BARRAS DE 7 DÍAS CON CHART.JS
 function renderWeeklyBarChart(items) {
   const canvas = document.getElementById('weekly-reservations-canvas');
   if (!canvas || !window.Chart) return;
 
   if (!items || !items.length) {
-    // Si no hay datos, limpiamos el canvas
     if (weeklyBarChart) weeklyBarChart.destroy();
     return;
   }
@@ -460,14 +471,14 @@ function renderWeeklyBarChart(items) {
       datasets: [{
         label: 'Reservas programadas',
         data: items.map(item => item.value),
-        backgroundColor: '#C0392B', // El rojo de SpicyTech
+        backgroundColor: '#C0392B',
         borderRadius: 4,
         barPercentage: 0.6
       }]
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false, // Fundamental para que respete el contenedor
+      maintainAspectRatio: false,
       plugins: { 
         legend: { display: false },
         tooltip: {
@@ -524,8 +535,34 @@ function renderMonthlyHoursPieChart(items) {
   });
 }
 
+function calculateProjectedRevenue() {
+  const now = new Date();
+  let total = 0;
+  DB_RESERVAS.forEach(r => {
+    if (!isActiveReservation(r)) return;
+    const d = parseDateValue(r.booking_date || r.date || r.created_at);
+    if (!d || d.getMonth() !== now.getMonth() || d.getFullYear() !== now.getFullYear()) return;
+    
+    const sp = SPACES_INFO.find(s => s.name === r.space_name || s.name === r.spaceName || s.name === r.space);
+    if (!sp || !sp.price) return;
+    
+    const hours = parseReservedHours(r.booking_time || r.time);
+    if (!Number.isFinite(hours)) return;
+    
+    const priceMatch = sp.price.match(/\d+(?:\.\d+)?/g);
+    if (priceMatch) {
+      const price = parseFloat(priceMatch.join('').replace('.', ''));
+      if (sp.price.toLowerCase().includes('mes')) {
+        total += price; 
+      } else {
+        total += price * hours;
+      }
+    }
+  });
+  return total;
+}
+
 function refreshStatsVisuals() {
-  // LLamamos al nuevo gráfico de Chart.js
   renderWeeklyBarChart(buildWeeklyReservations());
   renderMonthlyHoursPieChart(buildMonthlyHourCounts());
 
@@ -543,8 +580,36 @@ function refreshStatsVisuals() {
   const avgReservationEl = document.getElementById('stat-avg-reservation');
   const stats = buildBoxStats();
   if (avgReservationEl && stats) avgReservationEl.textContent = `${stats.mean.toFixed(1)}h`;
-}
 
+  const projectedRevenue = calculateProjectedRevenue();
+  const elRev = document.getElementById('stat-revenue-month');
+  if (elRev) elRev.textContent = `$${projectedRevenue.toLocaleString('es-AR')}`;
+
+  const typeBarsStats = document.getElementById('type-bars-stats');
+  if(typeBarsStats && SPACES_INFO.length > 0) {
+      const types = [
+        { label: 'Salas de reunión',    key: 'sala',         color: 'var(--red)' },
+        { label: 'Oficinas privadas',   key: 'privada',      color: 'var(--amber)' },
+        { label: 'Sala capacitación',   key: 'capacitacion', color: 'var(--green)' },
+      ];
+      
+      const activeRes = DB_RESERVAS.filter(isActiveReservation);
+      
+      typeBarsStats.innerHTML = types.map(t => {
+        const grupo = SPACES_INFO.filter(s => s.type === t.key);
+        const totalRes = activeRes.filter(r => grupo.some(g => g.name === r.space_name || g.name === r.space)).length;
+        const pctT  = Math.min(100, (totalRes / Math.max(1, activeRes.length)) * 100);
+        return `<div>
+          <div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px">
+            <span>${t.label}</span><span style="font-weight:700">${totalRes} reservas</span>
+          </div>
+          <div style="height:8px;background:var(--cream-dark);border-radius:4px">
+            <div style="height:100%;width:${pctT}%;background:${t.color};border-radius:4px;transition:width .4s ease"></div>
+          </div>
+        </div>`;
+      }).join('');
+  }
+}
 
 /* ══════════════════════════════════════════════
    AUTH GUARD & INIT
@@ -566,18 +631,16 @@ function doLogout(){localStorage.removeItem('nexo_token');localStorage.removeIte
 
 async function inicializarDashboard() {
   await fetchUsersFromAPI();
-  await fetchBookingsAPI();
   await fetchSpacesAPI();
+  await fetchBookingsAPI(); // Llama a updateStats() adentro
   checkValidationParam(); 
 }
 inicializarDashboard();
 
 
 /* ══════════════════════════════════════════════
-   DATA Y CONEXION A API
+   CONEXION A API
 ══════════════════════════════════════════════ */
-const API_BASE = 'https://tp-ing-software-2-spicy-tech.vercel.app/api';
-
 function getAllReservations() {
   return DB_RESERVAS.map(r => {
     let s = (r.status || 'pending').toLowerCase();
@@ -637,12 +700,11 @@ async function fetchBookingsAPI() {
       });
       renderRes(reservasFront);
       renderOv();
-      updateAnalytics();
+      updateStats(); // ← ESTA ES LA LÍNEA CLAVE QUE CONECTA LA BD CON LOS GRÁFICOS
     }
   } catch (error) { console.error("Error fetchBookings:", error); }
 }
 
-const SPACES_INFO = [];
 async function fetchSpacesAPI() {
   try {
     const response = await fetch(`${API_BASE}/spaces`);
@@ -749,9 +811,9 @@ function renderRes(list) {
 function renderSp(list) {
   const res = DB_RESERVAS;
   document.getElementById('sp-tbody').innerHTML = list.map(s => {
-    const bookings = res.filter(r => r.space_name === s.name && r.status !== 'cancelada').length;
+    const bookings = res.filter(r => (r.space_name === s.name || r.space === s.name) && isActiveReservation(r)).length;
     const today = new Date().toISOString().split('T')[0];
-    const todayRes = res.filter(r => r.space_name === s.name && r.booking_date === today && r.status !== 'cancelada');
+    const todayRes = res.filter(r => (r.space_name === s.name || r.space === s.name) && r.booking_date === today && isActiveReservation(r));
     const st = todayRes.length >= 3 ? 'full' : todayRes.length > 0 ? 'partial' : 'avail';
 
     return `
@@ -883,7 +945,6 @@ async function cambiarEstadoReserva(id, nuevoEstado) {
     if (result.success) {
       toast(result.message || `Reserva ${nuevoEstado} ✓`, 'ok');
       await fetchBookingsAPI(); 
-      updateStats();            
     } else { toast('Error: ' + (result.message || 'respuesta inesperada'), 'err'); }
   } catch (error) { toast('No se pudo conectar con el servidor', 'err'); }
 }
@@ -895,7 +956,7 @@ async function eliminarReserva(id) {
     const result = await response.json();
     if (result.success) {
       toast('Reserva eliminada ✓', 'ok');
-      await fetchBookingsAPI(); updateStats(); 
+      await fetchBookingsAPI(); 
     } else { toast('Error al eliminar: ' + (result.message || ''), 'err'); }
   } catch (error) { toast('No se pudo conectar con el servidor', 'err'); }
 }
@@ -945,7 +1006,6 @@ async function saveSpaceAPI() {
 
   if (!name || !type || !cap || !price) { toast('Completá todos los campos.', 'err'); return; }
 
-  // 🛡️ Prevenimos el error UUID enviando los datos limpios y sin ID inventado
   const payload = {
     name: name, type: type, capacity: parseInt(cap, 10), price: parseFloat(price), status: 'activo'
   };
@@ -960,7 +1020,6 @@ async function saveSpaceAPI() {
     toast('Espacio guardado en la BD ✓', 'ok');
     closeModal();
     await fetchSpacesAPI(); 
-    updateStats();
   } catch(e) { toast('Error de conexión', 'err'); }
 }
 
@@ -982,7 +1041,7 @@ async function createManualRes() {
     const result = await response.json();
     if (result.success) {
       toast('Reserva guardada ✓', 'ok');
-      closeModal(); await fetchBookingsAPI(); updateStats();
+      closeModal(); await fetchBookingsAPI(); 
     } else { toast('Error: ' + result.message, 'err'); }
   } catch (error) { toast('Error de conexión', 'err'); }
 }
@@ -1251,6 +1310,46 @@ function renderQuickPackButtons(modeHours) {
   `).join('');
 }
 
+// ESTA FUNCION FUE RE-CONECTADA PARA QUE TODO EL TABLERO RESPONDA A SUPABASE
+function updateStats() {
+  const alertChip = document.getElementById('alert-pending');
+  const conflictChip = document.getElementById('alert-conflicts');
+  
+  const res = DB_RESERVAS;
+  const pending = res.filter(r => r.status === 'pending' || r.status === 'pendiente').length;
+  const confirmed = res.filter(r => r.status === 'confirmed' || r.status === 'confirmada' || r.status === 'ingresado').length;
+
+  document.getElementById('stat-res-active').textContent = confirmed;
+  document.getElementById('stat-users').textContent = USRS.filter(u => u.role === 'member').length; 
+  document.getElementById('stat-pending-n').textContent = pending;
+  
+  if (alertChip) alertChip.querySelector('.ac-count').textContent = pending + ' reserva' + (pending!==1?'s':'') + ' pendiente' + (pending!==1?'s':'') + ' de confirmación';
+
+  const conflicts = res.filter(r => r.hasConflict && (r.status === 'pending' || r.status === 'pendiente'));
+  if (conflictChip) {
+    conflictChip.style.display = conflicts.length ? '' : 'none';
+    const cc = conflictChip.querySelector('.cc-count');
+    if (cc) cc.textContent = conflicts.length + ' conflicto' + (conflicts.length!==1?'s':'') + ' de horario detectado' + (conflicts.length!==1?'s':'');
+  }
+
+  const today = new Date().toISOString().split('T')[0];
+  const total = SPACES_INFO.length;
+  const ocupados = SPACES_INFO.filter(s => res.some(r => r.space_name===s.name && r.booking_date===today && (r.status==='confirmed'||r.status==='ingresado'||r.status==='confirmada'))).length;
+  const parciales = SPACES_INFO.filter(s => !res.some(r => r.space_name===s.name && r.booking_date===today && (r.status==='confirmed'||r.status==='ingresado'||r.status==='confirmada')) && res.some(r => r.space_name===s.name && r.booking_date===today && r.status==='pendiente')).length;
+  const libres = total - ocupados - parciales;
+  const pct = total > 0 ? Math.round((ocupados / total) * 100) : 0;
+
+  const el = id => document.getElementById(id);
+  if(el('ring-pct')) el('ring-pct').textContent = pct + '%';
+  if(el('ring-oc'))  el('ring-oc').textContent  = 'Ocupados: ' + ocupados;
+  if(el('ring-pa'))  el('ring-pa').textContent  = 'Parcial: '  + parciales;
+  if(el('ring-fr'))  el('ring-fr').textContent  = 'Disponibles: ' + libres;
+  const circle = el('ring-circle');
+  if(circle){ const r=46, circ=2*Math.PI*r, dash=(pct/100)*circ; circle.setAttribute('stroke-dasharray',`${dash} ${circ - dash}`); }
+
+  updateAnalytics(); // Llama a la lógica estadística
+}
+
 function updateAnalytics() {
   const samples = buildAnalyticsSamples();
   const sampleEl = document.getElementById('analytics-sample');
@@ -1267,11 +1366,11 @@ function updateAnalytics() {
     if (meanEl) meanEl.textContent = '0.0h';
     if (medianEl) medianEl.textContent = '0.0h';
     if (modeEl) modeEl.textContent = '0.0h';
-    if (rEl) rEl.textContent = 'Correlación: N/A';
+    if (rEl) rEl.textContent = 'Correlación: 0.00';
     if (alertBox) {
       alertBox.className = 'analysis-alert ok';
       alertTitle.textContent = 'Esperando datos reales…';
-      alertText.textContent = 'Cuando ingresen reservas al sistema, aquí verás conclusiones útiles.';
+      alertText.textContent = 'Cuando ingresen reservas al sistema, aquí verás conclusiones útiles para el negocio.';
     }
     renderQuickPackButtons(4);
     refreshStatsVisuals();
@@ -1293,47 +1392,17 @@ function updateAnalytics() {
     if (tResult.reject) {
       alertBox.className = 'analysis-alert warn';
       alertTitle.textContent = '📊 Tendencia confirmada: Uso prolongado';
-      alertText.textContent = `Los datos demuestran matemáticamente que tus clientes tienden a quedarse más de 4 horas (Media actual = ${tResult.mean.toFixed(1)}h). Se recomendará automáticamente el paquete de Media Jornada para aumentar los ingresos.`;
+      alertText.textContent = `Los datos demuestran que tus clientes tienden a quedarse más de 4 horas (Promedio general = ${tResult.mean.toFixed(1)}h). Se recomendará automáticamente el paquete de Media Jornada a los nuevos usuarios para impulsar ventas.`;
     } else {
       alertBox.className = 'analysis-alert ok';
-      alertTitle.textContent = '📊 Tendencia confirmada: Alquileres cortos';
-      alertText.textContent = `La mayoría de los clientes utiliza el espacio para reuniones rápidas (Media actual = ${tResult.mean.toFixed(1)}h). El paquete rápido de 4 horas es tu mejor opción de venta.`;
+      alertTitle.textContent = '📊 Tendencia confirmada: Alquileres rápidos';
+      alertText.textContent = `La mayoría de los clientes utiliza el espacio para reuniones ágiles (Promedio general = ${tResult.mean.toFixed(1)}h). El paquete estándar de 4 horas es el producto más eficiente y seguro de ofrecer.`;
     }
   }
 
   renderQuickPackButtons(stats.mode);
   refreshStatsVisuals();
 }
-
-async function createBookingFromPayload(payload) {
-  const response = await fetch(`${API_BASE}/bookings`, {
-    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
-  });
-  return response.json();
-}
-
-async function generateDemoReservations() {
-  if (!confirm('¿Crear reservas demo falsas para poblar las estadísticas?')) return;
-  const now = new Date();
-  const payloads = [];
-  
-  for(let i=0; i<15; i++) {
-    const date = new Date(now); date.setDate(now.getDate() + Math.floor(Math.random() * 7));
-    payloads.push({
-      username: `test_user${i}`,
-      space_name: SPACES_INFO.length ? SPACES_INFO[i % SPACES_INFO.length].name : 'Sala Demo',
-      booking_date: date.toISOString().slice(0, 10),
-      booking_time: i%2===0 ? '09:00,10:00,11:00,12:00' : '14:00,15:00'
-    });
-  }
-
-  let ok = 0;
-  for (const payload of payloads) {
-    try { const result = await createBookingFromPayload(payload); if (result && result.success) ok++; } catch(e){}
-  }
-  await fetchBookingsAPI(); toast(`Reservas demo creadas: ${ok}`, 'ok');
-}
-
 
 /* ══════════════════════════════════════════════
    VALIDACIÓN DE QR (CHECK-IN DE ACCESO)
