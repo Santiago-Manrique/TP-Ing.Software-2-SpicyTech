@@ -1,4 +1,4 @@
-"""Chequeo manual para validar la configuración SMTP de SpicyTech.
+"""Chequeo manual para validar la configuración de Resend de SpicyTech.
 
 No envía correos por sí solo si no se habilita SEND_SMOKE_EMAIL=1.
 """
@@ -18,8 +18,8 @@ from auth import EmailNotifier
 
 
 def main() -> None:
-    print("SMTP_USER configured:", bool(os.environ.get("SMTP_USER")))
-    print("SMTP_PASS configured:", bool(os.environ.get("SMTP_PASS") or os.environ.get("GMAIL_APP_PASSWORD")))
+    print("RESEND_API_KEY configured:", bool(os.environ.get("RESEND_API_KEY")))
+    print("EMAIL_FROM:", os.environ.get("EMAIL_FROM", "SpicyTech Coworking <onboarding@resend.dev>"))
     print("CONTACT_EMAIL:", os.environ.get("CONTACT_EMAIL", "info@spicytech.com"))
 
     if os.environ.get("SEND_SMOKE_EMAIL") != "1":
@@ -28,9 +28,11 @@ def main() -> None:
 
     notifier = EmailNotifier()
     notifier._send_email(
-        to=os.environ.get("SMOKE_TO_EMAIL", "cliente.prueba@spicytech.com"),
-        subject="Prueba SMTP SpicyTech",
-        html_body="<html><body><h1>Prueba SMTP SpicyTech</h1><p>Si recibís esto, el envío funciona.</p></body></html>",
+        # En modo sandbox (sin dominio verificado), Resend solo entrega a la
+        # casilla con la que te registraste en Resend.
+        to=os.environ.get("SMOKE_TO_EMAIL", "santi481manrique@gmail.com"),
+        subject="Prueba Resend SpicyTech",
+        html_body="<html><body><h1>Prueba Resend SpicyTech</h1><p>Si recibís esto, el envío funciona.</p></body></html>",
     )
 
 
