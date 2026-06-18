@@ -850,8 +850,42 @@ class BookingRepository(SupabaseTableRepository):
         })
 
     def get_all(self) -> list[dict]:
-        response = self._table(self.TABLE_NAME).select("*").execute()
-        return response.data if response.data else []
+        """Obtiene todas las reservas, paginando para evitar el límite de 1000 filas
+        que PostgREST aplica por defecto en cada consulta. Se ordena por id de forma
+        descendente para que las reservas más recientes (incluyendo las recién
+        creadas) siempre estén presentes, incluso si la tabla acumula miles de
+        registros antiguos (por ejemplo, datos de pruebas de carga)."""
+        all_rows: list[dict] = []
+        page_size = 1000
+        start = 0
+        max_pages = 50  # límite de seguridad: hasta 50.000 filas
+        for _ in range(max_pages):
+            response = (
+                self._table(self.TABLE_NAME)
+                .select("*")
+                .order("id", desc=True)
+                .range(start, start + page_size - 1)
+                .execute()
+            )
+            rows = response.data or []
+            all_rows.extend(rows)
+            if len(rows) < page_size:
+                break
+            start += page_size
+        return all_rows
+
+    def delete(self, booking_id) -> bool:
+        """Elimina una reserva por su ID. Devuelve True si se eliminó algo."""
+        response = self._table(self.TABLE_NAME).delete().eq("id", self._coerce_id(booking_id)).execute()
+        return bool(response.data)
+
+    def delete_many(self, booking_ids: list) -> int:
+        """Elimina múltiples reservas por sus IDs. Devuelve la cantidad eliminada."""
+        if not booking_ids:
+            return 0
+        coerced_ids = [self._coerce_id(bid) for bid in booking_ids]
+        response = self._table(self.TABLE_NAME).delete().in_("id", coerced_ids).execute()
+        return len(response.data or [])
 
     def get_by_id(self, booking_id):
         """Obtiene una reserva por su ID (int o string)."""
