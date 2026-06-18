@@ -361,39 +361,39 @@
 
       <div class="view" id="view-stats">
         <div class="stats-row">
-          <div class="stat-card"><div class="s-icon" style="background:var(--red-pale)">📅</div><div><div class="s-num" id="stat-bookings-month">0</div><div class="s-label">Reservas este mes</div><div class="s-delta up">↑ 18% vs mes anterior</div></div></div>
-          <div class="stat-card"><div class="s-icon" style="background:var(--green-pale)">💰</div><div><div class="s-num">$84k</div><div class="s-label">Ingresos mayo</div><div class="s-delta up">↑ 12% vs abril</div></div></div>
-          <div class="stat-card"><div class="s-icon" style="background:var(--amber-pale)">⭐</div><div><div class="s-num">4.8</div><div class="s-label">Satisfacción</div><div class="s-delta up">↑ 0.2 puntos</div></div></div>
-          <div class="stat-card"><div class="s-icon" style="background:#EEF2FF">⏱️</div><div><div class="s-num" id="stat-avg-reservation">0.0h</div><div class="s-label">Promedio reserva</div><div class="s-delta">Sin cambio</div></div></div>
+          <div class="stat-card"><div class="s-icon" style="background:var(--red-pale)">📅</div><div><div class="s-num" id="stat-bookings-month">0</div><div class="s-label">Reservas este mes</div></div></div>
+          <div class="stat-card"><div class="s-icon" style="background:var(--green-pale)">💰</div><div><div class="s-num">$84k</div><div class="s-label">Ingresos proyectados</div></div></div>
+          <div class="stat-card"><div class="s-icon" style="background:var(--amber-pale)">⭐</div><div><div class="s-num">4.8</div><div class="s-label">Satisfacción</div></div></div>
+          <div class="stat-card"><div class="s-icon" style="background:#EEF2FF">⏱️</div><div><div class="s-num" id="stat-avg-reservation">0.0h</div><div class="s-label">Promedio de reserva</div></div></div>
         </div>
+      
         <div class="g2">
           <div class="card">
-            <div class="card-hd"><div class="card-title">Reservas por día (próximos 7 días)</div></div>
-            <div class="barchart dyn" id="weekly-reservations-chart"></div>
+            <div class="card-hd"><div class="card-title">Reservas: Próximos 7 días</div></div>
+            <div class="chart-shell" style="height: 250px;">
+              <canvas id="reservasBarChart"></canvas>
+            </div>
           </div>
+          
           <div class="card">
-            <div class="card-hd"><div class="card-title">Ingresos por tipo de espacio</div></div>
-            <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px">
-              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Salas de reunión</span><span style="font-weight:700">$38.400</span></div><div style="height:7px;background:var(--cream-dark);border-radius:4px"><div style="height:100%;width:46%;background:var(--red);border-radius:4px"></div></div></div>
-              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Oficinas privadas</span><span style="font-weight:700">$33.000</span></div><div style="height:7px;background:var(--cream-dark);border-radius:4px"><div style="height:100%;width:39%;background:var(--amber);border-radius:4px"></div></div></div>
-              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Capacitación</span><span style="font-weight:700">$8.400</span></div><div style="height:7px;background:var(--cream-dark);border-radius:4px"><div style="height:100%;width:10%;background:var(--green);border-radius:4px"></div></div></div>
-              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Espacio compartido</span><span style="font-weight:700">$4.200</span></div><div style="height:7px;background:var(--cream-dark);border-radius:4px"><div style="height:100%;width:5%;background:#4338CA;border-radius:4px"></div></div></div>
+            <div class="card-hd"><div class="card-title">¿Qué dicen tus datos?</div></div>
+            <div style="display:flex; flex-direction:column; gap: 15px; font-size: 14px; color: var(--txt2);">
+              <p><strong>Promedio:</strong> El número promedio de horas que nos piden por reserva. Es tu nivel de actividad habitual.</p>
+              <p><strong>Mediana:</strong> El punto medio. Significa que la mitad de tus reservas son más cortas que este valor, y la otra mitad son más largas.</p>
+              <p><strong>Moda:</strong> Es la duración de reserva que más se repite. Tu "best-seller" en cuanto a tiempo.</p>
             </div>
           </div>
         </div>
-        <div class="analytics-row">
-          <div class="card">
-            <div class="analytics-head">
-              <div>
-                <div class="card-title">Análisis estadístico de reservas</div>
-                <div style="font-size:12px;color:var(--txt3);margin-top:4px;max-width:560px;line-height:1.45;">Se usa la base real de reservas para medir $Y$ = horas reservadas y $X$ = días de anticipación. La moda marca el paquete rápido recomendado.</div>
-              </div>
-              <div class="analytics-meta">
-                <span class="pill-tag" id="analytics-sample">n=0</span>
-                <span class="pill-tag hot" id="analytics-r">r=0.00</span>
-                <span class="pill-tag ok" id="analytics-p">p≈0.0000</span>
-              </div>
-            </div>
+      
+        <div class="card">
+          <div class="card-hd"><div class="card-title">Medidas de Tendencia Central</div></div>
+          <div class="metric-grid">
+            <div class="metric-box"><span class="metric-label">Promedio (Media)</span><span class="metric-value" id="central-mean">0.00</span></div>
+            <div class="metric-box"><span class="metric-label">Punto Medio (Mediana)</span><span class="metric-value" id="central-median">0.00</span></div>
+            <div class="metric-box"><span class="metric-label">Más Frecuente (Moda)</span><span class="metric-value" id="central-mode">0.00</span></div>
+          </div>
+        </div>
+      </div>
 
             <div class="metric-grid">
               <div class="metric-box">
@@ -465,6 +465,39 @@
 <div class="toast" id="toast-el"></div>
 
 <script>
+  let myBarChart = null;
+
+function renderWeeklyBarChart() {
+  const canvas = document.getElementById('reservasBarChart');
+  const dataSemanal = buildWeeklyReservations(); // Usa tu función existente
+
+  if (myBarChart) myBarChart.destroy();
+
+  myBarChart = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: dataSemanal.map(d => d.label),
+      datasets: [{
+        label: 'Reservas por día',
+        data: dataSemanal.map(d => d.value),
+        backgroundColor: '#C0392B',
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+    }
+  });
+}
+
+// Asegurate de llamar a esta función dentro de updateStats()
+function updateStats() {
+    // ... tu código actual ...
+    renderWeeklyBarChart(); 
+}
 /* ══════════════════════════════════════════════
    AUTH GUARD: solo admin
 ══════════════════════════════════════════════ */
