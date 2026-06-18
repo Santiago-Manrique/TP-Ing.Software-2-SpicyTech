@@ -1746,10 +1746,49 @@ async function saveSpaceAPI() {
   const cap  = document.getElementById('sp-cap').value;
   const price = document.getElementById('sp-price').value;
 
+  // 1. Validamos que no falte nada
   if (!name || !type || !cap || !price) {
-    toast('Completá todos los campos del espacio.', 'err'); 
+    toast('Completá todos los campos del espacio.', 'err');
     return;
   }
+
+  // 2. Armamos el paquete EXACTO como lo espera Supabase
+  // 🚫 NO INCLUIMOS EL CAMPO "id", dejamos que Supabase lo genere
+  const payload = {
+    name: name,
+    type: type,
+    capacity: parseInt(cap, 10),
+    price: parseFloat(price),
+    status: 'activo'
+  };
+
+  try {
+    const resp = await fetch('https://tp-ing-software-2-spicy-tech.vercel.app/api/spaces', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    
+    const result = await resp.json();
+    
+    if (!result.success) { 
+      toast(result.message || 'Error al guardar espacio', 'err'); 
+      return; 
+    }
+
+    toast('Espacio guardado en la base de datos ✓', 'ok');
+    closeModal();
+    
+    // 3. LA CLAVE: Volvemos a pedirle los datos a Supabase para que 
+    // nuestro frontend reciba el UUID real que se acaba de generar.
+    await fetchSpacesAPI(); 
+    updateStats();
+
+  } catch(e) { 
+    console.error("Error en saveSpaceAPI:", e);
+    toast('Error de conexión con el servidor', 'err'); 
+  }
+}
 
   // Estructuramos el paquete garantizando tipos de datos numéricos correctos
   const data = {
